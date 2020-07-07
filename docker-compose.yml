@@ -1,0 +1,134 @@
+version: "3"
+services:
+  database.ttrss:
+    image: postgres:alpine
+    container_name: db_ttrss
+    expose: 
+      - 5432
+    environment: 
+      - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
+    volumes:
+      - ~/.postgresData/data/DBttrss/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
+    restart: always
+  
+  # database.huginn:
+  #   image: postgres:alpine
+  #   container_name: db_huginn
+  #   expose: 
+  #     - 5432
+  #   environment: 
+  #     - POSTGRES_USER=huginn
+  #     - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
+  #   volumes:
+  #     - ~/.postgresData/data/DBhuginn/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
+  #   restart: always
+
+  # service.huginn:
+  #   depends_on:
+  #     - database.huginn
+  #   image: huginn/huginn
+  #   container_name: huginn
+  #   ports:
+  #     - "778:3000"
+  #   restart: always    
+  #   environment: 
+  #     - DATABASE_ADAPTER=postgresql
+  #     - DATABASE_HOST=database.huginn
+  #     - HUGINN_DATABASE_USERNAME=huginn
+  #     - HUGINN_DATABASE_PASSWORD=$YOUR_PASSWORD$
+  #     - DATABASE_PORT=5432
+  #     - POSTGRES_PORT_5432_TCP_ADDR=database.huginn
+  #     - POSTGRES_PORT_5432_TCP_PORT=5432
+  #     - DATABASE_ENCODING=utf8
+  #     - DATABASE_RECONNECT=true
+  #   dns:
+  #     - 223.5.5.5
+  #     - 8.8.8.8
+
+  service.rsshub:
+    image: diygod/rsshub:latest
+    container_name: rsshub
+    restart: always
+    # ports:   # uncomment it if you need to expose your rsshub service to Internet
+    #     - '1200:1200'
+    expose:
+      - 1200
+    environment:
+      - NODE_ENV=production
+      - CACHE_TYPE=redis
+      - REDIS_URL=redis://service.redis:6379/
+      - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
+    labels:
+      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+    depends_on:
+      - service.redis
+      - service.browserless
+    dns:
+      - 223.5.5.5
+      - 8.8.8.8
+
+  service.browserless:  # dependency of rsshub
+    image: browserless/chrome
+    container_name: rsshub_browserless
+    labels:
+      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+    restart: always
+
+  service.redis:  # dependency of rsshub
+    image: redis:alpine
+    container_name: rsshub_redis
+    labels:
+      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+    restart: always
+    volumes:
+      - redis-data:/data
+
+  service.rss:
+    depends_on:
+      - database.ttrss
+    image: wangqiru/ttrss:latest
+    container_name: ttrss
+    ports:
+      - 777:80
+    environment:
+    #   - SELF_URL_PATH=http://YOURDOMAIN/ # please change to your own domain
+      - DB_HOST=database.ttrss
+      - DB_PORT=5432
+      - DB_NAME=ttrss
+      - DB_USER=postgres
+      - DB_PASS=$YOUR_PASSWORD$ # please change the password
+      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
+    stdin_open: true
+    tty: true
+    restart: always
+    command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
+
+  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` on TTRSS plugin setting page
+    image: wangqiru/mercury-parser-api:latest
+    container_name: ttrss_mercury
+    expose:
+      - 3000
+    restart: always
+
+  # service.opencc: # set OpenCC API endpoint to `service.opencc:3000` on TTRSS plugin setting page
+  #   image: wangqiru/opencc-api-server:latest
+  #   container_name: ttrss_opencc
+  #   environment:
+  #     - NODE_ENV=production
+  #   expose:
+  #     - 3000
+  #   restart: always
+
+  utility.watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCTOWER_LABEL_ENABLE=true  # only update certain container
+      - WATCHTOWER_POLL_INTERVAL=604800  # update every week
+    restart: always
+
+volumes:
+  redis-data:
