@@ -1,3 +1,6 @@
+# Rssman X 
+# Author & maintainer: Colin  
+
 version: "3"
 services:
   database.ttrss:

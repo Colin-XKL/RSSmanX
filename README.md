@@ -1,5 +1,13 @@
 # RSSman X
-**RSSman X** is a project that composed several useful services to help you build an excellent RSS experience.
+![logo](./.github/logo.png)
+
+![author](https://img.shields.io/badge/author-Colin-blue)
+![license](https://img.shields.io/github/license/Colin-XKL/RSSmanX)
+![release](https://img.shields.io/github/v/release/Colin-XKL/RSSmanX)
+[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+
+
+**RSSman X is a project that composed several useful services to help you build an excellent RSS experience.**
 ## Quick start
 ```bash
 sudo docker-compose up -d
@@ -15,15 +23,15 @@ This project contains several services that can help you build your own RSS work
 |---|---|---|---|
 |Tiny tiny RSS  |  A self hosted RSS service, manage all your feeds in one place | Yes | Yes |
 |Mercury  | Get full-text RSS feeds| No | Yes |
-|OpenCC | Convert Traditional Chinese to Simplified  Chinese| No |  |
+|OpenCC | Convert Traditional Chinese to Simplified  Chinese| No | - |
 |RSSHub | Easily get RSS feed of hot websites | No | Yes |
-|Huginn | Build your own RSS feed with great flexibility | No |  |
+|Huginn | Build your own RSS feed with great flexibility | No | - |
 |Watchtower | Keep your programs up to date | No | Yes |
 
-By default, only recommended service will be installed. For users that need higher level DIY, you can install all of the services listed above.
+**By default, only recommended services will be installed.** For users that need higher level DIY, you can install all of the services listed above.Just uncomment the lines in the yml file.
 # Installation
 ## Preparations
-To install RSSman X, you need to have a server that can host services that relevant with RSS. A Linux cloud server is recommended. Server with other operating system is OK as long as it can run docker🐋. 
+To deploy RSSman X, you need to have a server that can host services that relevant with RSS. A Linux cloud server is recommended. Server with other operating system is OK as long as it can run docker🐋. 
 
 In this document, I will take a Tencent cloud server with Ubuntu 18.04 as an example.
 ## Requirements
@@ -96,15 +104,15 @@ https://github.com/huginn/huginn#readme
 If you find bugs or have any good idea that can make this project better, feel free to open a Github issue or make a pull request. I'll reply you as soon as possible.
 
 # Acknowledgement
-* Tiny tiny RSS https://github.com/DIYgod/RSSHub
-* OpenCC https://github.com/BYVoid/OpenCC
-* Mercury https://github.com/postlight/mercury-parser
-* Huginn https://github.com/huginn/huginn#readme
-* RSShub https://github.com/DIYgod/RSSHub
-* Awesome RSS https://github.com/HenryQW/Awesome-TTRSS
+* [Tiny tiny RSS](https://github.com/DIYgod/RSSHub)
+* [OpenCC](https://github.com/BYVoid/OpenCC)
+* [Mercury](https://github.com/postlight/mercury-parser)
+* [Huginn](https://github.com/huginn/huginn#readme)
+* [RSShub](https://github.com/DIYgod/RSSHub)
+* [Awesome TTRSS](https://github.com/HenryQW/Awesome-TTRSS)
 
 # License
-MIT
+GPL-3.0 License
 
 # Changelogs
 * 2020-07-07 v1.0  First release
