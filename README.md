@@ -1,4 +1,6 @@
 # RSSman X
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX?ref=badge_shield)
+
 **RSSman X** is a project that composed several useful services to help you build an excellent RSS experience.
 ## Quick start
 ```bash
@@ -106,7 +108,8 @@ If you find bugs or have any good idea that can make this project better, feel f
 # License
 MIT
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX?ref=badge_large)
+
 # Changelogs
 * 2020-07-07 v1.0  First release
-
-
