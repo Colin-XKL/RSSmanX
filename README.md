@@ -4,13 +4,14 @@
 ![author](https://img.shields.io/badge/author-Colin-blue)
 ![license](https://img.shields.io/github/license/Colin-XKL/RSSmanX)
 ![release](https://img.shields.io/github/v/release/Colin-XKL/RSSmanX)
-[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX.svg?type=shield)
+![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)
 
 
 **RSSman X is a project that composed several useful services to help you build an excellent RSS experience.**
 ## Quick start
 ```bash
-sudo docker-compose up -d
+mkdir RSSmanX && cd $_ && wget https://cdn.jsdelivr.net/gh/Colin-XKL/RSSmanX/docker-compose.yml && sudo docker-compose up -d
 ```
 # Description
 Get drown in modern Internet life? You may need RSS to take you out of the information sea. RSS is an old tech developed in 1990s. But it is a good tool to help you away from the unnecessary information on the Internet.
@@ -40,7 +41,7 @@ In this document, I will take a Tencent cloud server with Ubuntu 18.04 as an exa
   
 If you have no idea installing these, below is an example. *(for Ubuntu only)*
 
-**To install docker:**
+**To install docker**
 ```bash
 sudo apt-get update
 
@@ -55,7 +56,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
-**To install docker-compose:**
+**To install docker-compose**
 ```bash
 sudo apt install docker-compose
 ```
@@ -76,13 +77,14 @@ The first time you run the installation command may take you an unexpecting long
 
 # Usage
 Once the installation is done, you can visit `http://YOUR_SERVER_IP:777` to visit Tiny Tiny RSS login page. Use the default user `admin` and default password `password` to log in. **REMEMBER TO CHANGE YOUR PASSWORD!**  
+
 And then you can add rss feeds that you interested. You can either read the article online using the tiny tiny rss reader or you can go to a ttrss client on other platforms. For example, you can use `FeedMe` app on android to read your article and use `tiny Reader` on iOS/macOS. 
 
 Nowadays only few websites support RSS feed. For those websites that does not support RSS, you can go to https://doc.rsshub.app to find if there is a third-party rss service available. If the website your interested is supported by rsshub, you can subscribe the website by using rss feed by rsshub or use the self-hosted rsshub that you just created. Just replace the link from rsshub like from `https://rsshub.app/*` to `http://rsshub:1200/*` 
 
 
 ## Trouble shooting
-### Common problem
+### Common problems
 **1. Cannot open default login page**  
 Check your firewall and make sure you have allowed the port 777. If you changed the default port in the yml file, please also allow the port in your firewall.
    
@@ -112,9 +114,9 @@ If you find bugs or have any good idea that can make this project better, feel f
 * [Awesome TTRSS](https://github.com/HenryQW/Awesome-TTRSS)
 
 # License
-GPL-3.0 License
+GPL-3.0 
 
 # Changelogs
 * 2020-07-07 v1.0  First release
-
+* 2020-07-14 v1.1  Update quick start shell script
 
