@@ -32,7 +32,7 @@ services:
   #   image: huginn/huginn
   #   container_name: huginn
   #   ports:
-  #     - "778:3000"
+  #     - 778:3000
   #   restart: always    
   #   environment: 
   #     - DATABASE_ADAPTER=postgresql
@@ -53,7 +53,7 @@ services:
     container_name: rsshub
     restart: always
     # ports:   # uncomment it if you need to expose your rsshub service to Internet
-    #     - '1200:1200'
+    #     - 1200:1200
     expose:
       - 1200
     environment:
@@ -86,7 +86,7 @@ services:
     volumes:
       - redis-data:/data
 
-  service.rss:
+  service.ttrss:
     depends_on:
       - database.ttrss
     image: wangqiru/ttrss:latest
@@ -100,7 +100,7 @@ services:
       - DB_NAME=ttrss
       - DB_USER=postgres
       - DB_PASS=$YOUR_PASSWORD$ # please change the password
-      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
+      - ENABLE_PLUGINS=auth_internal,fever,mercury_fulltext # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
     stdin_open: true
     tty: true
     restart: always
