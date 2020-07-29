@@ -13,6 +13,8 @@ services:
     volumes:
       - ~/.postgresData/data/DBttrss/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
     restart: always
+    labels:
+      - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
   
   # database.huginn:
   #   image: postgres:alpine
@@ -25,6 +27,8 @@ services:
   #   volumes:
   #     - ~/.postgresData/data/DBhuginn/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
   #   restart: always
+  #   labels:
+  #     - one.colinx.rssmanx.description='Database of Huginn'
 
   # service.huginn:
   #   depends_on:
@@ -47,6 +51,8 @@ services:
   #   dns:
   #     - 223.5.5.5
   #     - 8.8.8.8
+  #   labels:
+  #     - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
 
   service.rsshub:
     image: diygod/rsshub:latest
@@ -63,7 +69,8 @@ services:
       - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
     labels:
       - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
-    depends_on:
+      - one.colinx.rssmanx.description='RSShub makes everything rssiable'
+      depends_on:
       - service.redis
       - service.browserless
     dns:
@@ -75,14 +82,16 @@ services:
     container_name: rsshub_browserless
     labels:
       - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
-    restart: always
+      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
+      restart: always
 
   service.redis:  # dependency of rsshub
     image: redis:alpine
     container_name: rsshub_redis
     labels:
       - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
-    restart: always
+      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
+      restart: always
     volumes:
       - redis-data:/data
 
@@ -101,6 +110,8 @@ services:
       - DB_USER=postgres
       - DB_PASS=$YOUR_PASSWORD$ # please change the password
       - ENABLE_PLUGINS=auth_internal,fever,mercury_fulltext # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
+    labels:
+      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     stdin_open: true
     tty: true
     restart: always
@@ -111,6 +122,8 @@ services:
     container_name: ttrss_mercury
     expose:
       - 3000
+    labels:
+      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
     restart: always
 
   # service.opencc: # set OpenCC API endpoint to `service.opencc:3000` on TTRSS plugin setting page
@@ -120,6 +133,8 @@ services:
   #     - NODE_ENV=production
   #   expose:
   #     - 3000
+  #   labels:
+  #     - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
   #   restart: always
 
   utility.watchtower:
@@ -131,6 +146,8 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCTOWER_LABEL_ENABLE=true  # only update certain container
       - WATCHTOWER_POLL_INTERVAL=604800  # update every week
+    labels:
+      - one.colinx.rssmanx.description='A tool to help you automatically update your docker containers.'
     restart: always
 
 volumes:
