@@ -119,4 +119,5 @@ GPL-3.0
 # Changelogs
 * 2020-07-07 v1.0  First release
 * 2020-07-14 v1.1  Update quick start shell script
+* 2020-10-05 v1.2  Fix wrong environment variable.
 

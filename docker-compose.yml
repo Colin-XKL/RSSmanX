@@ -144,7 +144,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCTOWER_LABEL_ENABLE=true  # only update certain container
+      - WATCHTOWER_LABEL_ENABLE=true  # only update certain container
       - WATCHTOWER_POLL_INTERVAL=604800  # update every week
     labels:
       - one.colinx.rssmanx.description='A tool to help you automatically update your docker containers.'
