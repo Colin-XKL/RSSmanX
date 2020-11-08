@@ -61,13 +61,14 @@ services:
     # ports:   # uncomment it if you need to expose your rsshub service to Internet
     #     - 1200:1200
     expose:
-      - 1200
+      - 80
     environment:
       - PORT=80 # now ttrss only support port 80 or 443 for security concerns.
       - NODE_ENV=production
       - CACHE_TYPE=redis
       - REDIS_URL=redis://service.redis:6379/
       - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
+      - DEBUG_INFO=false
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='RSShub makes everything rssiable'
@@ -94,7 +95,7 @@ services:
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
     restart: always
     volumes:
-      - redis-data:/data
+      - rsshub-redis-data:/data
 
   service.ttrss:
     depends_on:
@@ -110,9 +111,12 @@ services:
       - DB_NAME=ttrss
       - DB_USER=postgres
       - DB_PASS=$YOUR_PASSWORD$ # please change the password
+      - ALLOW_PORTS='778'
       - ENABLE_PLUGINS=auth_internal,fever,mercury_fulltext # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
     labels:
       - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
+    volumes:
+      - feed-favicons:/var/www/feed-icons/
     stdin_open: true
     tty: true
     restart: always
@@ -152,4 +156,5 @@ services:
     restart: always
 
 volumes:
-  redis-data:
+  rsshub-redis-data:
+  feed-favicons:
