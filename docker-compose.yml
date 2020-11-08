@@ -1,27 +1,27 @@
-# Rssman X 
-# Author & maintainer: Colin  
+# Rssman X
+# Author & maintainer: Colin
 
 version: "3"
 services:
   database.ttrss:
     image: postgres:alpine
     container_name: db_ttrss
-    expose: 
+    expose:
       - 5432
-    environment: 
+    environment:
       - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
     volumes:
       - ~/.postgresData/data/DBttrss/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
     restart: always
     labels:
       - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
-  
+
   # database.huginn:
   #   image: postgres:alpine
   #   container_name: db_huginn
-  #   expose: 
+  #   expose:
   #     - 5432
-  #   environment: 
+  #   environment:
   #     - POSTGRES_USER=huginn
   #     - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
   #   volumes:
@@ -37,8 +37,8 @@ services:
   #   container_name: huginn
   #   ports:
   #     - 778:3000
-  #   restart: always    
-  #   environment: 
+  #   restart: always
+  #   environment:
   #     - DATABASE_ADAPTER=postgresql
   #     - DATABASE_HOST=database.huginn
   #     - HUGINN_DATABASE_USERNAME=huginn
@@ -63,35 +63,36 @@ services:
     expose:
       - 1200
     environment:
+      - PORT=80 # now ttrss only support port 80 or 443 for security concerns.
       - NODE_ENV=production
       - CACHE_TYPE=redis
       - REDIS_URL=redis://service.redis:6379/
       - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
     labels:
-      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='RSShub makes everything rssiable'
-      depends_on:
+    depends_on:
       - service.redis
       - service.browserless
     dns:
       - 223.5.5.5
       - 8.8.8.8
 
-  service.browserless:  # dependency of rsshub
+  service.browserless: # dependency of rsshub
     image: browserless/chrome
     container_name: rsshub_browserless
     labels:
-      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
-      restart: always
+    restart: always
 
-  service.redis:  # dependency of rsshub
+  service.redis: # dependency of rsshub
     image: redis:alpine
     container_name: rsshub_redis
     labels:
-      - com.centurylinklabs.watchtower.enable=true  # keep the rsshub up to date
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
-      restart: always
+    restart: always
     volumes:
       - redis-data:/data
 
@@ -103,7 +104,7 @@ services:
     ports:
       - 777:80
     environment:
-    #   - SELF_URL_PATH=http://YOURDOMAIN/ # please change to your own domain
+      # - SELF_URL_PATH=http://YOURDOMAIN/ # please change to your own domain
       - DB_HOST=database.ttrss
       - DB_PORT=5432
       - DB_NAME=ttrss
@@ -144,8 +145,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_LABEL_ENABLE=true  # only update certain container
-      - WATCHTOWER_POLL_INTERVAL=604800  # update every week
+      - WATCHTOWER_LABEL_ENABLE=true # only update certain container
+      - WATCHTOWER_POLL_INTERVAL=604800 # update every week
     labels:
       - one.colinx.rssmanx.description='A tool to help you automatically update your docker containers.'
     restart: always
