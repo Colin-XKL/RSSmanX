@@ -1,23 +1,25 @@
 # Rssman X
-# Author & maintainer: Colin
+# Author & maintainer: Colin (Colin_XKL@outlook.com)
 
 version: "3"
 services:
   database.ttrss:
-    image: postgres:alpine
+    image: postgres:13-alpine
     container_name: db_ttrss
     expose:
       - 5432
     environment:
       - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
     volumes:
-      - ~/.postgresData/data/DBttrss/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
+      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
     restart: always
+    networks:
+      - rss_net_internal
     labels:
       - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
 
   # database.huginn:
-  #   image: postgres:alpine
+  #   image: postgres:13-alpine
   #   container_name: db_huginn
   #   expose:
   #     - 5432
@@ -25,8 +27,10 @@ services:
   #     - POSTGRES_USER=huginn
   #     - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
   #   volumes:
-  #     - ~/.postgresData/data/DBhuginn/:/var/lib/postgresql/data # persist postgres data to ~/.postgresData/data/ on the host
+  #     - ~/.dockerData/Database/DBhuginn/:/var/lib/postgresql/data # persist postgres data
   #   restart: always
+  #   networks:
+  #     - rss_net_internal
   #   labels:
   #     - one.colinx.rssmanx.description='Database of Huginn'
 
@@ -48,6 +52,9 @@ services:
   #     - POSTGRES_PORT_5432_TCP_PORT=5432
   #     - DATABASE_ENCODING=utf8
   #     - DATABASE_RECONNECT=true
+  #   networks:
+  #     - rss_net_public
+  #     - rss_net_internal
   #   dns:
   #     - 223.5.5.5
   #     - 8.8.8.8
@@ -57,6 +64,9 @@ services:
   service.rsshub:
     image: diygod/rsshub:latest
     container_name: rsshub
+    depends_on:
+      - service.redis
+      - service.browserless
     restart: always
     # ports:   # uncomment it if you need to expose your rsshub service to Internet
     #     - 1200:1200
@@ -69,12 +79,11 @@ services:
       - REDIS_URL=redis://service.redis:6379/
       - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
       - DEBUG_INFO=false
+    networks:
+      - rss_net_internal
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='RSShub makes everything rssiable'
-    depends_on:
-      - service.redis
-      - service.browserless
     dns:
       - 223.5.5.5
       - 8.8.8.8
@@ -82,26 +91,32 @@ services:
   service.browserless: # dependency of rsshub
     image: browserless/chrome
     container_name: rsshub_browserless
+    environment:
+      - USE_CHROME_STABLE=true
+    restart: always
+    networks:
+      - rss_net_internal
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
-    restart: always
 
   service.redis: # dependency of rsshub
     image: redis:alpine
     container_name: rsshub_redis
-    labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
     restart: always
     volumes:
       - rsshub-redis-data:/data
+    networks:
+      - rss_net_internal
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
+      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
 
   service.ttrss:
-    depends_on:
-      - database.ttrss
     image: wangqiru/ttrss:latest
     container_name: ttrss
+    depends_on:
+      - database.ttrss
     ports:
       - 777:80
     environment:
@@ -111,12 +126,16 @@ services:
       - DB_NAME=ttrss
       - DB_USER=postgres
       - DB_PASS=$YOUR_PASSWORD$ # please change the password
-      - ALLOW_PORTS='778'
+      - ALLOW_PORTS=80,443,778
       - ENABLE_PLUGINS=auth_internal,fever,mercury_fulltext # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
-    labels:
-      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     volumes:
       - feed-favicons:/var/www/feed-icons/
+      - starred-images:/var/www/cache/starred-images/
+    networks:
+      - rss_net_public
+      - rss_net_internal
+    labels:
+      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     stdin_open: true
     tty: true
     restart: always
@@ -127,6 +146,8 @@ services:
     container_name: ttrss_mercury
     expose:
       - 3000
+    networks:
+      - rss_net_internal
     labels:
       - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
     restart: always
@@ -138,6 +159,8 @@ services:
   #     - NODE_ENV=production
   #   expose:
   #     - 3000
+  #   networks:
+  #     - rss_net_internal
   #   labels:
   #     - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
   #   restart: always
@@ -152,9 +175,17 @@ services:
       - WATCHTOWER_LABEL_ENABLE=true # only update certain container
       - WATCHTOWER_POLL_INTERVAL=604800 # update every week
     labels:
-      - one.colinx.rssmanx.description='A tool to help you automatically update your docker containers.'
+      - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
+    networks:
+      - rss_net_public
     restart: always
 
 volumes:
   rsshub-redis-data:
   feed-favicons:
+  starred-images:
+
+networks:
+  rss_net_public:
+  rss_net_internal:
+    internal: true

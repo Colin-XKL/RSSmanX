@@ -121,4 +121,5 @@ GPL-3.0
 * 2020-07-14 v1.1  Update quick start shell script
 * 2020-10-05 v1.2  Fix wrong environment variable.
 * 2020-11-08 v1.3  TTRSS now can update feeds with ports except 80/443, and out self-hosted rsshub works again.
+* 2020-11-13 v1.4  Several updates includes security and performance enhancements.
 
