@@ -80,6 +80,7 @@ services:
       - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
       - DEBUG_INFO=false
     networks:
+      - rss_net_public
       - rss_net_internal
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
@@ -95,6 +96,7 @@ services:
       - USE_CHROME_STABLE=true
     restart: always
     networks:
+      - rss_net_public
       - rss_net_internal
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
@@ -147,6 +149,7 @@ services:
     expose:
       - 3000
     networks:
+      - rss_net_public
       - rss_net_internal
     labels:
       - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
