@@ -107,7 +107,7 @@ services:
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
 
   service.redis: # dependency of rsshub
-    image: redis:alpine:6.0-alpine
+    image: redis:6.0-alpine
     container_name: rsshub_redis
     restart: always
     volumes:
