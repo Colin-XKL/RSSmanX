@@ -32,7 +32,7 @@ mkdir RSSmanX && cd $_ && wget https://cdn.jsdelivr.net/gh/Colin-XKL/RSSmanX/doc
 | Postgres      | 数据库，用于存储 RSS 文章数据等。比 MySQL 更轻，性能更好                                    | True     |
 | OpenCC        | 简繁体转换，如果你订阅了一些繁体的 RSS 源，可以用它来将文章转为简体                         | False    |
 | Mercury       | 用于获取 RSS 全文                                                                           | True     |
-| WatchToiwer   | 用于自动更新 RSShub 等组件，可以更好地支持新添加的源以及更快的获得 bug 修复                 | True     |
+| WatchTower   | 用于自动更新 RSShub 等组件，可以更好地支持新添加的源以及更快的获得 bug 修复                 | True     |
 
 
 # 安装说明
