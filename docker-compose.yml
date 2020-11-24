@@ -98,6 +98,10 @@ services:
     networks:
       - rss_net_public
       - rss_net_internal
+    healthcheck:
+      interval: 2m
+      timeout: 10s
+      retries: 10
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
       - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
