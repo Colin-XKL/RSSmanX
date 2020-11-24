@@ -173,10 +173,12 @@ services:
     image: containrrr/watchtower:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_LABEL_ENABLE=true # only update certain container
-      - WATCHTOWER_POLL_INTERVAL=604800 # update every week
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
     labels:
       - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
     networks:
