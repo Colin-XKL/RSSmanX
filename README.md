@@ -9,6 +9,8 @@
 
 
 **RSSman X is a project that composed several useful services to help you build an excellent RSS experience.**
+
+[中文说明](https://github.com/Colin-XKL/RSSmanX/blob/master/README-zh_cn.md) ｜ English
 ## Quick start
 ```bash
 mkdir RSSmanX && cd $_ && wget https://cdn.jsdelivr.net/gh/Colin-XKL/RSSmanX/docker-compose.yml && sudo docker-compose up -d
@@ -20,7 +22,7 @@ Most of the website have already dispose RSS support because you can read their 
 
 
 This project contains several services that can help you build your own RSS workflow.
-|Service|Description|Necessary |Recommed|
+|Service|Description|Necessary |Recommend|
 |---|---|---|---|
 |Tiny tiny RSS  |  A self hosted RSS service, manage all your feeds in one place | Yes | Yes |
 |Mercury  | Get full-text RSS feeds| No | Yes |
@@ -122,4 +124,4 @@ GPL-3.0
 * 2020-10-05 v1.2  Fix wrong environment variable.
 * 2020-11-08 v1.3  TTRSS now can update feeds with ports except 80/443, and out self-hosted rsshub works again.
 * 2020-11-13 v1.4  Several updates includes security and performance enhancements.
-
+* 2020-11-24 v1.5  Lock the docker image version of some services to avoid unexpected errors.
