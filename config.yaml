@@ -1,0 +1,147 @@
+# clash config file
+
+# Port of HTTP(S) proxy server on the local end
+port: 8080
+
+# Port of SOCKS5 proxy server on the local end
+socks-port: 8085
+
+# Transparent proxy server port for Linux and macOS (Redirect TCP and TProxy UDP)
+# redir-port: 7892
+
+# Transparent proxy server port for Linux (TProxy TCP and TProxy UDP)
+# tproxy-port: 7893
+
+# HTTP(S) and SOCKS5 server on the same port
+# mixed-port: 7890
+
+# authentication of local SOCKS5/HTTP(S) server
+# authentication:
+#  - "user1:pass1"
+#  - "user2:pass2"
+
+allow-lan: true
+
+bind-address: "*"
+
+mode: rule
+
+# Clash by default prints logs to STDOUT
+# info / warning / error / debug / silent
+log-level: info
+
+ipv6: false
+
+profile:
+  # Store the `select` results in $HOME/.config/clash/.cache
+  # set false If you don't want this behavior
+  # when two different configurations have groups with the same name, the selected values are shared
+  store-selected: false
+
+# DNS server settings
+# This section is optional. When not present, the DNS server will be disabled.
+dns:
+  enable: false
+
+# proxies:
+
+proxy-providers:
+  global:
+    type: http
+    url: "https://proxypooliu.herokuapp.com/clash/proxies"
+    interval: 3600
+    path: ./provider.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+
+  zh:
+    type: http
+    url: "https://proxypool.fly.dev/clash/proxies?c=CN,HK,TW"
+    interval: 3600
+    path: ./provider.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+
+  oversea:
+    type: http
+    url: "https://proxypool.fly.dev/clash/proxies?nc=CN&filter=1" # filter out pool
+    #  https://proxypool.fly.dev/clash/proxies?nc=CN
+    interval: 3600
+    path: ./provider.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+
+proxy-groups:
+  # url-test select which proxy will be used by benchmarking speed to a URL.
+  - name: "fq"
+    type: fallback
+    use:
+      - oversea
+      - global
+    lazy: true
+
+  # fallback selects an available policy by priority. The availability is tested by accessing an URL, just like an auto url-test group.
+  - name: "anti-anti-spider"
+    type: load-balance
+    use:
+      - zh
+      - oversea
+      - global
+    proxies:
+      - DIRECT
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: "auto"
+    type: fallback
+    use:
+      - oversea
+      - zh
+      - global
+    proxies:
+      - DIRECT
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+rules:
+  # bypass cn and local
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - IP-CIDR,172.16.0.0/12,DIRECT
+  - IP-CIDR,10.0.0.0/8,DIRECT
+  - IP-CIDR,192.168.0.0/16,DIRECT
+  - GEOIP,CN,DIRECT
+
+  #hot blocked site
+  - DOMAIN-SUFFIX,google.com,fq
+  - DOMAIN-KEYWORD,google,fq
+  - DOMAIN,google.com,fq
+  - DOMAIN-KEYWORD,wikipedia,fq
+  - DOMAIN-KEYWORD,facebook,fq
+  - DOMAIN-KEYWORD,intgram,fq
+  - DOMAIN-KEYWORD,telegram,fq
+  - DOMAIN,rsshub.app,fq
+
+  # common not available region
+  - DOMAIN-KEYWORD,tw,fq
+  - DOMAIN-KEYWORD,hk,fq
+  - GEOIP,TW,fq
+  - GEOIP,US,fq
+
+  # anti anti spider
+  - DOMAIN-KEYWORD,wechat,anti-anti-spider
+  - DOMAIN-KEYWORD,wexin,anti-anti-spider
+  - DOMAIN,wemp.app,anti-anti-spider
+  - DOMAIN,ershicimi.com,anti-anti-spider
+
+  #block
+  # - DOMAIN-SUFFIX,ad.com,REJECT
+
+  # - DST-PORT,80,DIRECT
+  # - SRC-PORT,7777,DIRECT
+  - MATCH,auto

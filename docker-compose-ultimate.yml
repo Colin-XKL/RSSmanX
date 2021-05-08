@@ -1,0 +1,253 @@
+# update time 2021-05-08
+# version 2.0
+version: "3.5"
+services:
+  ######################
+  ##   Applications   ##
+  ######################
+
+  app.ttrss:
+    image: wangqiru/ttrss
+    container_name: ttrss
+    depends_on:
+      - database.ttrss
+      - service.clash
+    ports:
+      - 777:80/tcp
+    environment:
+      - SELF_URL_PATH=http://rss.colinx.one:777/ # !!!please change to your own domain!!!
+      # proxy
+      - HTTP_PROXY=clash:8080
+      # database settings
+      - DB_HOST=database.ttrss
+      - DB_PORT=5432
+      - DB_NAME=ttrss
+      - DB_USER=postgres
+      - DB_PASS=%%Password_HERE%% # please change the password
+      - ENABLE_PLUGINS=auth_internal,fever
+    networks:
+      - net_public
+      - net_private
+    volumes:
+      - feed-favicons:/var/www/feed-icons/
+      - starred-images:/var/www/cache/starred-images/
+      - plugins:/var/www/app/plugins.local/
+      - themes:/var/www/app/themes.local/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    stdin_open: true
+    tty: true
+    command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
+    labels:
+      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
+    restart: always
+
+  app.huginn:
+    depends_on:
+      - database.huginn
+    image: huginn/huginn
+    container_name: huginn
+    ports:
+      - 778:80/tcp
+    environment:
+      - DOMAIN=rss.colinx.one:778
+      - PORT=80
+      # database settings
+      - DATABASE_ADAPTER=postgresql
+      - DATABASE_HOST=database.huginn
+      - HUGINN_DATABASE_USERNAME=huginn
+      - HUGINN_DATABASE_PASSWORD=%%Password_HERE%%
+      - DATABASE_PORT=5432
+      - POSTGRES_PORT_5432_TCP_ADDR=database.huginn
+      - POSTGRES_PORT_5432_TCP_PORT=5432
+    networks:
+      - net_public
+      - net_private
+    dns:
+      - 223.5.5.5
+      - 8.8.8.8
+    restart: always
+    labels:
+      - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
+
+  ######################
+  ##     Databases    ##
+  ######################
+
+  database.ttrss:
+    image: postgres:13-alpine # Lock major version
+    container_name: ttrss_db
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
+    volumes:
+      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
+    networks:
+      - net_private
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: always
+    labels:
+      - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
+
+  database.huginn:
+    image: postgres:13-alpine # Lock major version
+    container_name: huginn_db
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=huginn
+      - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
+    volumes:
+      - ~/.dockerData/Database/DBhuginn/:/var/lib/postgresql/data # persist postgres data
+    networks:
+      - net_private
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    labels:
+      - one.colinx.rssmanx.description='Database of Huginn'
+
+  ######################
+  ##     Services     ##
+  ######################
+
+  service.rsshub:
+    image: diygod/rsshub
+    container_name: rsshub
+    depends_on:
+      - service.redis
+      - service.clash
+    restart: always
+    # ports:
+    #     - '1200:1200'
+    environment:
+      - PORT=80
+      # miscellaneous settings
+      - NODE_ENV=production
+      - CACHE_TYPE=redis
+      - REDIS_URL=redis://service.redis:6379/
+      - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
+      # use proxy
+      - PROXY_URI=http://clash:8080
+    expose:
+      - 80
+    networks:
+      - net_public
+      - net_private
+    dns:
+      - 223.5.5.5
+      - 8.8.8.8
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
+      - one.colinx.rssmanx.description='RSShub makes everything rssable'
+
+  service.browserless: # dependency of rsshub
+    image: browserless/chrome:1-chrome-stable
+    container_name: rsshub_browserless
+    environment:
+      - USE_CHROME_STABLE=true
+    restart: always
+    networks:
+      - net_public
+      - net_private
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
+      - one.colinx.rssmanx.description='This one is one of the rsshub's dependencies'
+
+  service.redis: # dependency of rsshub
+    image: redis:6.0-alpine
+    container_name: rsshub_redis
+    networks:
+      - net_private
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
+      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
+
+  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` in TTRSS plugin setting page
+    image: wangqiru/mercury-parser-api
+    container_name: ttrss_mercury
+    expose:
+      - 3000
+    networks:
+      - net_public
+    labels:
+      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
+    restart: always
+
+  service.opencc: # set OpenCC API endpoint to `service.opencc:3000` in TTRSS plugin setting page
+    image: wangqiru/opencc-api-server
+    container_name: ttrss_opencc
+    environment:
+      - NODE_ENV=production
+    expose:
+      - 3000
+    networks:
+      - net_private
+    labels:
+      - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
+    restart: always
+
+  service.clash:
+    image: dreamacro/clash
+    container_name: clash
+    networks:
+      - net_public
+    volumes:
+      - ./config.yaml:/root/.config/clash/config.yaml:ro
+      - clash-data:/root/.config/clash
+    labels:
+      - one.colinx.rssmanx.description='Rule based proxy tool'
+    restart: always
+
+  ######################
+  ##     Utilities    ##
+  ######################
+
+  utility.watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true # only update containers with flags
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
+    networks:
+      - net_public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
+    restart: always
+
+volumes:
+  redis-data:
+  feed-favicons:
+  starred-images:
+  plugins:
+  themes:
+  clash-data:
+
+networks:
+  net_public:
+  net_private:
+    internal: true
