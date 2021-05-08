@@ -134,7 +134,7 @@ https://github.com/huginn/huginn#readme
 | Data persist storage   | ✅       | ✅   | ✅          |
 | Container autoupdate   | ✅       |      | ✅          |
 | Container health check | ✅       |      | ✅          |
-| Glabal proxy           |          |      | ✅          |
+| Global proxy           |          |      | ✅          |
 | Smart routing          |          |      | ✅          |
 |                        |          |      |             |
 
