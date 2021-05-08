@@ -1,200 +1,173 @@
-# Rssman X
-# Author & maintainer: Colin (Colin_XKL@outlook.com)
-
-version: "3"
+# update time 2021-05-08
+# version 2.0
+version: "3.5"
 services:
-  database.ttrss:
-    image: postgres:13-alpine
-    container_name: db_ttrss
-    expose:
-      - 5432
-    environment:
-      - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
-    volumes:
-      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
-    restart: always
-    networks:
-      - rss_net_internal
-    labels:
-      - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
+  ######################
+  ##   Applications   ##
+  ######################
 
-  # database.huginn:
-  #   image: postgres:13-alpine
-  #   container_name: db_huginn
-  #   expose:
-  #     - 5432
-  #   environment:
-  #     - POSTGRES_USER=huginn
-  #     - POSTGRES_PASSWORD=$YOUR_PASSWORD$ # please change the password
-  #   volumes:
-  #     - ~/.dockerData/Database/DBhuginn/:/var/lib/postgresql/data # persist postgres data
-  #   restart: always
-  #   networks:
-  #     - rss_net_internal
-  #   labels:
-  #     - one.colinx.rssmanx.description='Database of Huginn'
-
-  # service.huginn:
-  #   depends_on:
-  #     - database.huginn
-  #   image: huginn/huginn
-  #   container_name: huginn
-  #   ports:
-  #     - 778:3000
-  #   restart: always
-  #   environment:
-  #     - DATABASE_ADAPTER=postgresql
-  #     - DATABASE_HOST=database.huginn
-  #     - HUGINN_DATABASE_USERNAME=huginn
-  #     - HUGINN_DATABASE_PASSWORD=$YOUR_PASSWORD$
-  #     - DATABASE_PORT=5432
-  #     - POSTGRES_PORT_5432_TCP_ADDR=database.huginn
-  #     - POSTGRES_PORT_5432_TCP_PORT=5432
-  #     - DATABASE_ENCODING=utf8
-  #     - DATABASE_RECONNECT=true
-  #   networks:
-  #     - rss_net_public
-  #     - rss_net_internal
-  #   dns:
-  #     - 223.5.5.5
-  #     - 8.8.8.8
-  #   labels:
-  #     - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
-
-  service.rsshub:
-    image: diygod/rsshub:latest
-    container_name: rsshub
-    depends_on:
-      - service.redis
-      - service.browserless
-    restart: always
-    # ports:   # uncomment it if you need to expose your rsshub service to Internet
-    #     - 1200:1200
-    expose:
-      - 80
-    environment:
-      - PORT=80 # now ttrss only support port 80 or 443 for security concerns.
-      - NODE_ENV=production
-      - CACHE_TYPE=redis
-      - REDIS_URL=redis://service.redis:6379/
-      - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
-      - DEBUG_INFO=false
-    networks:
-      - rss_net_public
-      - rss_net_internal
-    labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='RSShub makes everything rssiable'
-    dns:
-      - 223.5.5.5
-      - 8.8.8.8
-
-  service.browserless: # dependency of rsshub
-    image: browserless/chrome:1-chrome-stable
-    container_name: rsshub_browserless
-    environment:
-      - USE_CHROME_STABLE=true
-    restart: always
-    networks:
-      - rss_net_public
-      - rss_net_internal
-    healthcheck:
-      interval: 2m
-      timeout: 10s
-      retries: 10
-    labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
-
-  service.redis: # dependency of rsshub
-    image: redis:6.0-alpine
-    container_name: rsshub_redis
-    restart: always
-    volumes:
-      - rsshub-redis-data:/data
-    networks:
-      - rss_net_internal
-    labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='this one is one of the rsshub's dependencies'
-
-  service.ttrss:
-    image: wangqiru/ttrss:latest
+  app.ttrss:
+    image: wangqiru/ttrss
     container_name: ttrss
     depends_on:
       - database.ttrss
     ports:
-      - 777:80
+      - 777:80/tcp
     environment:
-      # - SELF_URL_PATH=http://YOURDOMAIN/ # please change to your own domain
+      - SELF_URL_PATH=http://rss.colinx.one:777/ # !!!please change to your own domain!!!
+
+      # database settings
       - DB_HOST=database.ttrss
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=$YOUR_PASSWORD$ # please change the password
-      - ALLOW_PORTS=80,443,778
-      - ENABLE_PLUGINS=auth_internal,fever,mercury_fulltext # auth_internal is required. Plugins enabled here will be enabled for all users as system plugins
+      - DB_PASS=%%Password_HERE%% # please change the password
+      - ENABLE_PLUGINS=auth_internal,fever
+    networks:
+      - net_public
+      - net_private
     volumes:
       - feed-favicons:/var/www/feed-icons/
       - starred-images:/var/www/cache/starred-images/
-    networks:
-      - rss_net_public
-      - rss_net_internal
-    labels:
-      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
+      - plugins:/var/www/app/plugins.local/
+      - themes:/var/www/app/themes.local/
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     stdin_open: true
     tty: true
-    restart: always
     command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
+    labels:
+      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
+    restart: always
 
-  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` on TTRSS plugin setting page
-    image: wangqiru/mercury-parser-api:latest
+  ######################
+  ##     Databases    ##
+  ######################
+
+  database.ttrss:
+    image: postgres:13-alpine # Lock major version
+    container_name: ttrss_db
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
+    volumes:
+      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
+    networks:
+      - net_private
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: always
+    labels:
+      - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
+
+  ######################
+  ##     Services     ##
+  ######################
+
+  service.rsshub:
+    image: diygod/rsshub
+    container_name: rsshub
+    depends_on:
+      - service.redis
+
+    restart: always
+    # ports:
+    #     - '1200:1200'
+    environment:
+      - PORT=80
+      # miscellaneous settings
+      - NODE_ENV=production
+      - CACHE_TYPE=redis
+      - REDIS_URL=redis://service.redis:6379/
+    expose:
+      - 80
+    networks:
+      - net_public
+      - net_private
+    dns:
+      - 223.5.5.5
+      - 8.8.8.8
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
+      - one.colinx.rssmanx.description='RSShub makes everything rssable'
+
+  service.redis: # dependency of rsshub
+    image: redis:6.0-alpine
+    container_name: rsshub_redis
+    networks:
+      - net_private
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
+      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
+
+  service.mercury: # set Mercury Parser API endpoint to `service.mercury:3000` in TTRSS plugin setting page
+    image: wangqiru/mercury-parser-api
     container_name: ttrss_mercury
     expose:
       - 3000
     networks:
-      - rss_net_public
-      - rss_net_internal
+      - net_public
     labels:
       - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
     restart: always
 
-  # service.opencc: # set OpenCC API endpoint to `service.opencc:3000` on TTRSS plugin setting page
-  #   image: wangqiru/opencc-api-server:latest
+  # service.opencc: # set OpenCC API endpoint to `service.opencc:3000` in TTRSS plugin setting page
+  #   image: wangqiru/opencc-api-server
   #   container_name: ttrss_opencc
   #   environment:
   #     - NODE_ENV=production
   #   expose:
   #     - 3000
   #   networks:
-  #     - rss_net_internal
+  #     - net_private
   #   labels:
   #     - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
   #   restart: always
 
+  ######################
+  ##     Utilities    ##
+  ######################
+
   utility.watchtower:
+    image: containrrr/watchtower
     container_name: watchtower
-    image: containrrr/watchtower:latest
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true # only update containers with flags
+      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
+    networks:
+      - net_public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_LABEL_ENABLE=true # only update certain container
-      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
     labels:
       - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
-    networks:
-      - rss_net_public
     restart: always
 
 volumes:
-  rsshub-redis-data:
+  redis-data:
   feed-favicons:
   starred-images:
+  plugins:
+  themes:
 
 networks:
-  rss_net_public:
-  rss_net_internal:
+  net_public:
+  net_private:
     internal: true
