@@ -41,7 +41,8 @@ mkdir RSSmanX && cd $_ && wget https://cdn.jsdelivr.net/gh/Colin-XKL/RSSmanX/doc
 | 容器健康检查       | ✅     |         | ✅             |
 | 海外站点加速       |        |         | ✅             |
 | 智能路由           |        |         | ✅             |
-|                    |        |         |                |
+| 反反爬虫           |        |         | ✅             |
+
 
 不同组件的功能描述见文末。不同版本对应的配置文件如下：
 
@@ -159,3 +160,15 @@ RSS 订阅管理与在线阅读工具
 # License
 
 GPL-3.0
+
+
+# Changelogs
+
+- 2020-07-07 v1.0 First release
+- 2020-07-14 v1.1 Update quick start shell script
+- 2020-10-05 v1.2 Fix wrong environment variable.
+- 2020-11-08 v1.3 TTRSS now can update feeds with ports except 80/443, and our self-hosted rsshub works again.
+- 2020-11-13 v1.4 Several updates includes security and performance enhancements.
+- 2020-11-24 v1.5 Lock the docker image version of some services to avoid unexpected errors.
+- 2021-05-08 v2.0 Add container network isolation, health check, global proxy, smart routing etc.
+- 2021-05-10 v2.1 Add rules for anti-anti-crawler, cloudflare etc.

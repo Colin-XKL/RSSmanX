@@ -174,3 +174,4 @@ GPL-3.0
 - 2020-11-13 v1.4 Several updates includes security and performance enhancements.
 - 2020-11-24 v1.5 Lock the docker image version of some services to avoid unexpected errors.
 - 2021-05-08 v2.0 Add container network isolation, health check, global proxy, smart routing etc.
+- 2021-05-10 v2.1 Add rules for anti-anti-crawler, cloudflare etc.
