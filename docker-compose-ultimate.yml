@@ -1,5 +1,5 @@
-# update time 2021-05-08
-# version 2.0
+# update time 2021-06-15
+# version 2.5
 version: "3.5"
 services:
   ######################
@@ -13,9 +13,9 @@ services:
       - database.ttrss
       - service.clash
     ports:
-      - 777:80/tcp
+      - 777:80/tcp # change the port if you need
     environment:
-      - SELF_URL_PATH=http://rss.colinx.one:777/ # !!!please change to your own domain!!!
+      - SELF_URL_PATH=http://example.domain:777/ # !!!please change to your own domain!!!
       # proxy
       - HTTP_PROXY=clash:8080
       # database settings
@@ -24,7 +24,7 @@ services:
       - DB_NAME=ttrss
       - DB_USER=postgres
       - DB_PASS=%%Password_HERE%% # please change the password
-      - ENABLE_PLUGINS=auth_internal,fever
+      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required. 
     networks:
       - net_public
       - net_private
@@ -66,7 +66,7 @@ services:
     dns:
       - 223.5.5.5
       - 8.8.8.8
-    restart: always
+    restart: unless-stopped
     labels:
       - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
 
@@ -82,7 +82,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
     volumes:
-      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
+      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:
       - net_private
     healthcheck:
@@ -101,9 +101,9 @@ services:
       - 5432
     environment:
       - POSTGRES_USER=huginn
-      - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
+      - POSTGRES_PASSWORD=%%Password_HERE%%  # feel free to change the password
     volumes:
-      - ~/.dockerData/Database/DBhuginn/:/var/lib/postgresql/data # persist postgres data
+      - ~/.dockerData/Database/DBhuginn/:/var/lib/postgresql/data # persist db data
     networks:
       - net_private
     healthcheck:
@@ -111,7 +111,7 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-    restart: always
+    restart: unless-stopped
     labels:
       - one.colinx.rssmanx.description='Database of Huginn'
 
@@ -125,7 +125,7 @@ services:
     depends_on:
       - service.redis
       - service.clash
-    restart: always
+    restart: on-failure:5
     # ports:
     #     - '1200:1200'
     environment:
@@ -153,20 +153,19 @@ services:
       - one.colinx.rssmanx.description='RSShub makes everything rssable'
 
   service.browserless: # dependency of rsshub
-    image: browserless/chrome:1-chrome-stable
+    image: browserless/chrome:1.43-chrome-stable
     container_name: rsshub_browserless
     environment:
       - USE_CHROME_STABLE=true
-    restart: always
+    restart: unless-stopped
     networks:
       - net_public
-      - net_private
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
-      - one.colinx.rssmanx.description='This one is one of the rsshub's dependencies'
+      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
 
   service.redis: # dependency of rsshub
-    image: redis:6.0-alpine
+    image: redis:6.2-alpine
     container_name: rsshub_redis
     networks:
       - net_private
@@ -187,10 +186,12 @@ services:
     container_name: ttrss_mercury
     expose:
       - 3000
+    environment:
+      - NODE_ENV=production
     networks:
       - net_public
     labels:
-      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the link in RSS'
+      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the RSS link'
     restart: always
 
   service.opencc: # set OpenCC API endpoint to `service.opencc:3000` in TTRSS plugin setting page
@@ -204,7 +205,7 @@ services:
       - net_private
     labels:
       - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
-    restart: always
+    restart: unless-stopped
 
   service.clash:
     image: dreamacro/clash
@@ -237,8 +238,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     labels:
       - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
-    restart: always
-
+    restart: unless-stopped
 volumes:
   redis-data:
   feed-favicons:
