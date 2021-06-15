@@ -1,4 +1,6 @@
 # clash config file
+# version 1.4
+# last update 2021-05-31
 
 # Port of HTTP(S) proxy server on the local end
 port: 8080
@@ -104,17 +106,14 @@ proxy-groups:
     interval: 300
 
 rules:
-  # bypass cn and local
+  # bypass local
   - IP-CIDR,127.0.0.0/8,DIRECT
   - IP-CIDR,172.16.0.0/12,DIRECT
   - IP-CIDR,10.0.0.0/8,DIRECT
   - IP-CIDR,192.168.0.0/16,DIRECT
-  - GEOIP,CN,DIRECT
 
-  #hot blocked site
-  - DOMAIN-SUFFIX,google.com,fq
+  # hot blocked site
   - DOMAIN-KEYWORD,google,fq
-  - DOMAIN,google.com,fq
   - DOMAIN-KEYWORD,wikipedia,fq
   - DOMAIN-KEYWORD,facebook,fq
   - DOMAIN-KEYWORD,intgram,fq
@@ -149,5 +148,7 @@ rules:
   - DOMAIN-KEYWORD,wexin,anti-anti-crawler
   - DOMAIN,wemp.app,anti-anti-crawler
   - DOMAIN,ershicimi.com,anti-anti-crawler
+  - DOMAIN,segmentfault.com,anti-anti-crawler
 
+  - GEOIP,CN,DIRECT
   - MATCH,auto
