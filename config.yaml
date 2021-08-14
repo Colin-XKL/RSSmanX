@@ -1,6 +1,6 @@
 # clash config file
-# version 1.4
-# last update 2021-05-31
+# version 1.6
+# last update 2021-08-12
 
 # Port of HTTP(S) proxy server on the local end
 port: 8080
@@ -70,17 +70,17 @@ proxy-providers:
 
 proxy-groups:
   # url-test select which proxy will be used by benchmarking speed to a URL.
+  # fallback selects an available policy by priority. The availability is tested by accessing an URL, just like an auto url-test group.
   - name: "fq"
     type: fallback
     use:
       - oversea
       - global
-    lazy: true
-    url: "http://www.gstatic.com/generate_204"
+    # lazy: true
+    url: "https://www.google.com/favicon.ico"
     interval: 300
 
-  # fallback selects an available policy by priority. The availability is tested by accessing an URL, just like an auto url-test group.
-  - name: "anti-anti-crawler"
+  - name: "global-random"
     type: load-balance
     use:
       - zh
@@ -93,17 +93,6 @@ proxy-groups:
     # use round robin to request the url via random proxies
     # or consistent-hashing will request same url via same proxy
     strategy: round-robin
-
-  - name: "auto"
-    type: fallback
-    use:
-      - oversea
-      - zh
-      - global
-    proxies:
-      - DIRECT
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
 
 rules:
   # bypass local
@@ -121,21 +110,21 @@ rules:
   - DOMAIN,rsshub.app,fq
 
   # anti cloudflare
-  - IP-CIDR,103.21.244.0/22,anti-anti-crawler
-  - IP-CIDR,103.22.200.0/22,anti-anti-crawler
-  - IP-CIDR,103.31.4.0/22,anti-anti-crawler
-  - IP-CIDR,104.16.0.0/13,anti-anti-crawler
-  - IP-CIDR,104.24.0.0/14,anti-anti-crawler
-  - IP-CIDR,108.162.192.0/18,anti-anti-crawler
-  - IP-CIDR,131.0.72.0/22,anti-anti-crawler
-  - IP-CIDR,141.101.64.0/18,anti-anti-crawler
-  - IP-CIDR,162.158.0.0/15,anti-anti-crawler
-  - IP-CIDR,172.64.0.0/13,anti-anti-crawler
-  - IP-CIDR,173.245.48.0/20,anti-anti-crawler
-  - IP-CIDR,188.114.96.0/20,anti-anti-crawler
-  - IP-CIDR,190.93.240.0/20,anti-anti-crawler
-  - IP-CIDR,197.234.240.0/22,anti-anti-crawler
-  - IP-CIDR,198.41.128.0/17,anti-anti-crawler
+  - IP-CIDR,103.21.244.0/22,global-random
+  - IP-CIDR,103.22.200.0/22,global-random
+  - IP-CIDR,103.31.4.0/22,global-random
+  - IP-CIDR,104.16.0.0/13,global-random
+  - IP-CIDR,104.24.0.0/14,global-random
+  - IP-CIDR,108.162.192.0/18,global-random
+  - IP-CIDR,131.0.72.0/22,global-random
+  - IP-CIDR,141.101.64.0/18,global-random
+  - IP-CIDR,162.158.0.0/15,global-random
+  - IP-CIDR,172.64.0.0/13,global-random
+  - IP-CIDR,173.245.48.0/20,global-random
+  - IP-CIDR,188.114.96.0/20,global-random
+  - IP-CIDR,190.93.240.0/20,global-random
+  - IP-CIDR,197.234.240.0/22,global-random
+  - IP-CIDR,198.41.128.0/17,global-random
 
   # common not available region
   - DOMAIN-KEYWORD,tw,fq
@@ -144,11 +133,13 @@ rules:
   - GEOIP,US,fq
 
   # anti anti crawler
-  - DOMAIN-KEYWORD,wechat,anti-anti-crawler
-  - DOMAIN-KEYWORD,wexin,anti-anti-crawler
-  - DOMAIN,wemp.app,anti-anti-crawler
-  - DOMAIN,ershicimi.com,anti-anti-crawler
-  - DOMAIN,segmentfault.com,anti-anti-crawler
+  - DOMAIN-KEYWORD,wechat,global-random
+  - DOMAIN-KEYWORD,wexin,global-random
+  - DOMAIN-KEYWORD,douban,global-random
+  - DOMAIN,wemp.app,global-random
+  - DOMAIN,ershicimi.com,global-random
+  - DOMAIN,segmentfault.com,global-random
 
+  # default
   - GEOIP,CN,DIRECT
-  - MATCH,auto
+  - MATCH,global-random
