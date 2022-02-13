@@ -110,6 +110,8 @@ sudo apt install docker-compose
 1. 访问你设置的`SELF_URL`即可看到 Tiny Tiny RSS 的登陆页面，使用默认账户`admin`，密码`password`登陆即可开始使用。
 2. 如开启海外站点解锁支持，第一次冷启动需要等待 3-5 分钟才能完全启动所有组件。
 3. 数据保存位置 ~/.dockerData/Database/
+4. 在TTRSS中将原来订阅的 `rsshub.app/*` 更改为 `rsshub/*` 即可使用RSSMan内的自建RSSHub实例，并激活反反爬虫和海外源加速等功能
+5. 关于ARM平台的支持可查阅置顶的issue
 
 详细配置和使用事宜请参考对应应用的文档说明。
 
