@@ -12,11 +12,6 @@
 
 [中文说明](https://github.com/Colin-XKL/RSSmanX/blob/master/README-zh_cn.md) ｜ English
 
-## Quick start
-
-```bash
-mkdir RSSmanX && cd $_ && wget https://cdn.jsdelivr.net/gh/Colin-XKL/RSSmanX/docker-compose.yml && sudo docker-compose up -d
-```
 
 # Description
 
