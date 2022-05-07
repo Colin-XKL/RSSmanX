@@ -1,6 +1,6 @@
 # clash config file
-# version 1.6
-# last update 2021-08-12
+# version 1.7
+# last update 2021-08-15
 
 # Port of HTTP(S) proxy server on the local end
 port: 8080
@@ -39,34 +39,67 @@ dns:
 proxy-providers:
   global:
     type: http
-    url: "https://proxypooliu.herokuapp.com/clash/proxies"
+    #    url: "https://proxypooliu.herokuapp.com/clash/proxies"
+    #    url: "https://cdn.jsdelivr.net/gh/guoxing123/xingxing/clash1123.yaml"
+    #    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
+    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
     interval: 3600
-    path: ./provider.yaml
+    path: ./cdn.jsdelivr.net.yaml
     health-check:
       enable: true
       interval: 600
-      url: http://www.gstatic.com/generate_204
+      #      url: http://www.gstatic.com/generate_204
+      url: "https://www.google.com/robots.txt"
 
-  zh:
+  global2:
     type: http
-    url: "https://proxypool.fly.dev/clash/proxies?c=CN,HK,TW"
+    url: "https://klausvpn.posyao.com/clash/proxies?nc=CN&speed=1"
     interval: 3600
-    path: ./provider.yaml
+    path: ./klausvpn.posyao.com.yaml
     health-check:
       enable: true
       interval: 600
-      url: http://www.gstatic.com/generate_204
+      url: https://www.gstatic.com/generate_204
+
+  global3: # won't update
+    type: http
+    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fv2raydy%2FClash%40main%2F02-22u2.yaml&target=clash"
+    interval: 3600
+    path: ./cdn.jsdelivr.net.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: https://www.gstatic.com/generate_204
+
+  global4: # won't update
+    type: http
+    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchangfengoss%2Fpub%2Fmain%2Fdata%2F2022_05_07%2FWftZxZ.yaml&target=clash"
+    interval: 3600
+    path: ./raw.githubusercontent.com.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: https://www.gstatic.com/generate_204
+
+  global5: # limited
+    type: http
+    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Ftsd.ink%2Ffree&target=clash"
+    interval: 3600
+    path: ./tsd.ink.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: https://www.gstatic.com/generate_204
 
   oversea:
     type: http
-    url: "https://proxypool.fly.dev/clash/proxies?nc=CN&filter=1" # filter out pool
-    #  https://proxypool.fly.dev/clash/proxies?nc=CN
+    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fguoxing123%2Fxingxing%2Fclash1123.yaml&target=clash"
     interval: 3600
-    path: ./provider.yaml
+    path: ./cdn.jsdelivr.net.yaml
     health-check:
       enable: true
       interval: 600
-      url: http://www.gstatic.com/generate_204
+      url: "https://www.google.com/robots.txt"
 
 proxy-groups:
   # url-test select which proxy will be used by benchmarking speed to a URL.
@@ -74,18 +107,25 @@ proxy-groups:
   - name: "fq"
     type: fallback
     use:
-      - oversea
       - global
+      - global2
+      - global5
+      - global3
+      - global4
+      - oversea
     # lazy: true
-    url: "https://www.google.com/favicon.ico"
-    interval: 300
+    url: "https://www.google.com/robots.txt"
+    interval: 100
 
   - name: "global-random"
     type: load-balance
     use:
-      - zh
       - oversea
       - global
+      - global2
+      - global3
+      - global4
+      - global5
     proxies:
       - DIRECT
     url: "http://www.gstatic.com/generate_204"
@@ -125,12 +165,6 @@ rules:
   - IP-CIDR,190.93.240.0/20,global-random
   - IP-CIDR,197.234.240.0/22,global-random
   - IP-CIDR,198.41.128.0/17,global-random
-
-  # common not available region
-  - DOMAIN-KEYWORD,tw,fq
-  - DOMAIN-KEYWORD,hk,fq
-  - GEOIP,TW,fq
-  - GEOIP,US,fq
 
   # anti anti crawler
   - DOMAIN-KEYWORD,wechat,global-random
