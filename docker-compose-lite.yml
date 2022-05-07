@@ -1,28 +1,27 @@
-# update time 2021-05-08
-# version 2.0
+# update time 2022-05-07
+# version 3.0
 version: "3.5"
 services:
   ######################
   ##   Applications   ##
   ######################
-
   app.ttrss:
     image: wangqiru/ttrss
     container_name: ttrss
     depends_on:
       - database.ttrss
     ports:
-      - 777:80/tcp
+      - ${TTRSS_PORT:-10080}:80/tcp # change the port if you need
     environment:
-      - SELF_URL_PATH=http://rss.colinx.one:777/ # !!!please change to your own domain!!!
-
+      - SELF_URL_PATH=${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
+      - DISABLE_USER_IN_DAYS=14
       # database settings
       - DB_HOST=database.ttrss
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=%%Password_HERE%% # please change the password
-      - ENABLE_PLUGINS=auth_internal,fever
+      - DB_PASS=${DB_Password:-'@pass_for_DB'} # please change the password
+      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required.
     networks:
       - net_public
       - net_private
@@ -31,11 +30,9 @@ services:
       - starred-images:/var/www/cache/starred-images/
       - plugins:/var/www/app/plugins.local/
       - themes:/var/www/app/themes.local/
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     stdin_open: true
     tty: true
-    command: sh -c 'sh /wait-for.sh $$DB_HOST:$$DB_PORT -- php /configure-db.php && exec s6-svscan /etc/s6/'
     labels:
       - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     restart: always
@@ -43,19 +40,17 @@ services:
   ######################
   ##     Databases    ##
   ######################
-
   database.ttrss:
     image: postgres:13-alpine # Lock major version
     container_name: ttrss_db
     expose:
       - 5432
     environment:
-      - POSTGRES_PASSWORD=%%Password_HERE%% # please change the password
+      - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
     volumes:
-      - ~/.dockerData/Database/DBttrss/:/var/lib/postgresql/data # persist postgres data
+      - /data/docker/Database/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:
       - net_private
- 
     restart: always
     labels:
       - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
@@ -69,8 +64,7 @@ services:
     container_name: rsshub
     depends_on:
       - service.redis
-
-    restart: always
+    restart: on-failure:5
     # ports:
     #     - '1200:1200'
     environment:
@@ -86,18 +80,16 @@ services:
       - 223.5.5.5
       - 8.8.8.8
     volumes:
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     labels:
       - one.colinx.rssmanx.description='RSShub makes everything rssable'
 
- 
 volumes:
-  redis-data:
   feed-favicons:
   starred-images:
   plugins:
   themes:
+
 
 networks:
   net_public:
