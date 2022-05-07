@@ -79,7 +79,7 @@ Once the installation is done, you can visit `http://YOUR_SERVER_IP:777` to visi
 
 And then you can add rss feeds that you interested. You can either read the article online using the tiny tiny rss reader or you can go to a ttrss client on other platforms. For example, you can use `FeedMe` app on android to read your article and use `tiny Reader` on iOS/macOS.
 
-Nowadays only few websites support RSS feed. For those websites that does not support RSS, you can go to https://doc.rsshub.app to find if there is a third-party rss service available. If the website your interested is supported by rsshub, you can subscribe the website by using rss feed by rsshub or use the self-hosted rsshub that you just created. Just replace the link from rsshub like from `https://rsshub.app/*` to `http://rsshub/*`
+Nowadays only few websites support RSS feed. For those websites that does not support RSS, you can go to https://docs.rsshub.app to find if there is a third-party rss service available. If the website your interested is supported by rsshub, you can subscribe the website by using rss feed by rsshub or use the self-hosted rsshub that you just created. Just replace the link from rsshub like from `https://rsshub.app/*` to `http://rsshub/*`
 
 ## Trouble shooting
 
