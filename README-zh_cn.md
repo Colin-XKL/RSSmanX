@@ -47,6 +47,7 @@
 选择对应版本下载到本地后都 compose 文件需要重命名为标准的`docker-compose.yml`才可使用
 
 # 安装说明
+详细docker组件安装和其他部署细节可以参见[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)
 
 ## 需求
 
@@ -88,14 +89,12 @@ sudo apt install docker-compose
 
 ## 如何安装
 
-安装好了 `docker` 和 `docker-compose` 后可以执行文章开头的快速开始的指令。或者可以按照下面的步骤手动操作：
+安装好了 `docker` 和 `docker-compose` 后，可以使用`git clone https://github.com/Colin-XKL/RSSmanX --depth=1`快速克隆本仓库，也可以通过[这个镜像地址](https://archive.fastgit.org/Colin-XKL/RSSmanX/archive/refs/heads/master.zip)下载仓库zip文件，[Gitee上也有镜像](https://gitee.com/colin-xkl/RSSmanX)不过不经常更新。
 
-1. 确定安装好了 `docker` 和 `docker-compose`
-2. 克隆本仓库/下载你所需要的版本的 compose 文件，注意修改文件名
-3. cd 进入文件夹，编辑`docker-compose`文件，修改密码及 ttrss 的`SELF_URL`处的值
-4. 运行 `sudo docker-compose up -d`
-5. 等待程序跑完
-6. 安装完成 ✅
+1. cd 进入文件夹，修改.env中的值，如密码和TTRSS入口URL等
+2. 运行 `sudo docker-compose up -d`
+3. 等待程序跑完
+4. 安装完成 ✅
 
 #### 使用相关事宜：
 
@@ -172,3 +171,4 @@ GPL-3.0
 - 2021-05-10 v2.1 Add rules for anti-anti-crawler, cloudflare etc.
 - 2021-06-15 v2.5 Update route rules, and better container restart policy.
 - 2021-08-14 v2.6 Optimize route rules
+- 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.

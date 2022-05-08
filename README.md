@@ -68,6 +68,7 @@ For full installation document, please go to 📕
 1. install requirements like `docker` and `docker-compose`
 2. clone this repository
 3. cd into the folder
+4. edit `.env` file to set variables
 4. run `sudo docker-compose up -d`
 5. wait until the program done
 
@@ -172,3 +173,4 @@ GPL-3.0
 - 2021-05-10 v2.1 Add rules for anti-anti-crawler, cloudflare etc.
 - 2021-06-15 v2.5 Update route rules, and better container restart policy.
 - 2021-08-14 v2.6 Optimize route rules
+- 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.
