@@ -245,7 +245,6 @@ services:
       - net_public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     labels:
       - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
