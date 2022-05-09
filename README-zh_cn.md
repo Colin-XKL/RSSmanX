@@ -44,7 +44,7 @@
 
 **Ultimate 版：**`docker-compose-ultimate.yml`和`config.yaml`
 
-选择对应版本下载到本地后都 compose 文件需要重命名为标准的`docker-compose.yml`才可使用
+选择对应版本下载到本地后都 compose 文件需要重命名为标准的`docker-compose.yml`
 
 # 安装说明
 详细docker组件安装和其他部署细节可以参见[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)
