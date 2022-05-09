@@ -92,6 +92,7 @@ sudo apt install docker-compose
 安装好了 `docker` 和 `docker-compose` 后，可以使用`git clone https://github.com/Colin-XKL/RSSmanX --depth=1`快速克隆本仓库，也可以通过[这个镜像地址](https://archive.fastgit.org/Colin-XKL/RSSmanX/archive/refs/heads/master.zip)下载仓库zip文件，[Gitee上也有镜像](https://gitee.com/colin-xkl/RSSmanX)不过不经常更新。
 
 1. cd 进入文件夹，修改.env中的值，如密码和TTRSS入口URL等
+2. 选择一个你需要安装的RSS MAN X的版本，删除其他两个文件并重命名为标准的compose文件名。如安装ultimate版，rm删除另外两个，之后`mv docker-compose-ultimate.yml docker-compose.yml`进行重命名
 2. 运行 `sudo docker-compose up -d`
 3. 等待程序跑完
 4. 安装完成 ✅
