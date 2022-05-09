@@ -80,7 +80,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
     volumes:
-      - /data/docker/Database/DBttrss/:/var/lib/postgresql/data # persist db data
+      - ${DB_DIR:-~/.docker/Database}/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:
       - net_private
     healthcheck:
@@ -101,7 +101,7 @@ services:
       - POSTGRES_USER=huginn
       - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
     volumes:
-      - /data/docker/Database/DBhuginn/:/var/lib/postgresql/data # persist db data
+      - ${DB_DIR:-~/.docker/Database}/DBhuginn/:/var/lib/postgresql/data # persist db data
     networks:
       - net_private
     healthcheck:
