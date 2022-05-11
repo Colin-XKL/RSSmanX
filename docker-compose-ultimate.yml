@@ -52,6 +52,7 @@ services:
     environment:
       - DOMAIN=${HOST}:${HUGINN_PORT:-10070}
       - PORT=3000
+      - DEFAULT_HTTP_USER_AGENT='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.81 Safari/537.36'
       # database settings
       - DATABASE_ADAPTER=postgresql
       - DATABASE_HOST=database.huginn
