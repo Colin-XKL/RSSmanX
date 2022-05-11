@@ -173,3 +173,4 @@ GPL-3.0
 - 2021-06-15 v2.5 Update route rules, and better container restart policy.
 - 2021-08-14 v2.6 Optimize route rules
 - 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.
+- 2022-05-11 v3.3 Fix some problem when deploy huginn on a NAS, update some default configs.
