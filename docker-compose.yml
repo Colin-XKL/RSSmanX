@@ -1,5 +1,5 @@
-# update time 2022-05-07
-# version 3.0
+# update time 2022-05-11
+# version 3.3
 version: "3.5"
 services:
   ######################
@@ -16,13 +16,12 @@ services:
       - SELF_URL_PATH=${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
       - DISABLE_USER_IN_DAYS=14
       - ALLOW_PORTS=${RSS_ALLOEW_PORTS:-'80,443,3000'}
-
       # database settings
       - DB_HOST=database.ttrss
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=${DB_Password:-'@pass_for_DB'} # please change the password
+      - DB_PASS=${DB_Password:-'pass_for_DB'} # please change the password
       - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required.
     networks:
       - net_public
@@ -48,7 +47,7 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
+      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:

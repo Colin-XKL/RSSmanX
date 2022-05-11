@@ -1,5 +1,5 @@
-# update time 2022-05-07
-# version 3.0
+# update time 2022-05-11
+# version 3.3
 version: "3.5"
 services:
   ######################
@@ -25,7 +25,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=${DB_Password:-'@pass_for_DB'} # please change the password
+      - DB_PASS=${DB_Password:-'pass_for_DB'} # please change the password
       - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required.
     networks:
       - net_public
@@ -48,15 +48,15 @@ services:
     image: huginn/huginn
     container_name: huginn
     ports:
-      - ${HUGINN_PORT:-10070}:80/tcp
+      - ${HUGINN_PORT:-10070}:3000/tcp
     environment:
       - DOMAIN=${HOST}:${HUGINN_PORT:-10070}
-      - PORT=80
+      - PORT=3000
       # database settings
       - DATABASE_ADAPTER=postgresql
       - DATABASE_HOST=database.huginn
       - HUGINN_DATABASE_USERNAME=huginn
-      - HUGINN_DATABASE_PASSWORD=${DB_Password:-'@pass_for_DB'}
+      - HUGINN_DATABASE_PASSWORD=${DB_Password:-'pass_for_DB'}
       - DATABASE_PORT=5432
       - POSTGRES_PORT_5432_TCP_ADDR=database.huginn
       - POSTGRES_PORT_5432_TCP_PORT=5432
@@ -79,7 +79,7 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
+      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:
@@ -100,7 +100,7 @@ services:
       - 5432
     environment:
       - POSTGRES_USER=huginn
-      - POSTGRES_PASSWORD=${DB_Password:-'@pass_for_DB'} # feel free to change the password
+      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DBhuginn/:/var/lib/postgresql/data # persist db data
     networks:
