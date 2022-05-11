@@ -19,7 +19,6 @@ services:
       - ALLOW_PORTS=${RSS_ALLOEW_PORTS:-'80,443,3000'}
       # proxy
       - HTTP_PROXY=clash:8080
-      - HTTPS_PROXY=clash:8080
       # database settings
       - DB_HOST=database.ttrss
       - DB_PORT=5432
@@ -56,11 +55,9 @@ services:
       # database settings
       - DATABASE_ADAPTER=postgresql
       - DATABASE_HOST=database.huginn
-      - HUGINN_DATABASE_USERNAME=huginn
-      - HUGINN_DATABASE_PASSWORD=${DB_Password:-'pass_for_DB'}
+      - DATABASE_USERNAME=huginn
+      - DATABASE_PASSWORD=${DB_Password:-'pass_for_DB'}
       - DATABASE_PORT=5432
-      - POSTGRES_PORT_5432_TCP_ADDR=database.huginn
-      - POSTGRES_PORT_5432_TCP_PORT=5432
     networks:
       - net_public
       - net_private
