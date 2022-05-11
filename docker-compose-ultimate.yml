@@ -16,6 +16,7 @@ services:
     environment:
       - SELF_URL_PATH=${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
       - DISABLE_USER_IN_DAYS=14
+      - ALLOW_PORTS=${RSS_ALLOEW_PORTS:-'80,443,3000'}
       # proxy
       - HTTP_PROXY=clash:8080
       - HTTPS_PROXY=clash:8080
