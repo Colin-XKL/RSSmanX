@@ -105,9 +105,9 @@ sudo apt install docker-compose
 4. 在TTRSS中将原来订阅的 `rsshub.app/*` 更改为 `rsshub/*` 即可使用RSSMan内的自建RSSHub实例，并激活反反爬虫和海外源加速等功能
 5. 关于ARM平台的支持可查阅置顶的issue
 6. 默认情况下只有TTRSS和Huginn可以从外部访问，其他组件互相可以访问但不能直接从内部访问以提高安全性
-7. RSS Man X的除 lite 以外的版本默认包含了自托管的 mercury 实例，你只需要在插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`
+7. RSS Man X的除 lite 以外的版本默认包含了自托管的 mercury 实例，你只需要在插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`  
 
-
+其他常见问题和部署使用细节可以查阅Github Issue或[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)  
 
 详细配置和使用事宜请参考对应应用的文档说明。
 
