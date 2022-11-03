@@ -123,7 +123,8 @@ RSS 订阅管理与在线阅读工具
 生成国内大部分网站的 RSS 信息源，同时自部署可以访问到那些严格防爬的站点的源（知乎、微博等）
 
 **Huginn**
-高级 IFTTT 工具，你可以用生成任何 RSS 源，但使用门槛略高
+高级 IFTTT 工具，你可以用生成任何 RSS 源，但使用门槛略高，可参考这篇教程 [Huginn 指南：为任意网站制作 RSS
+](https://blog.colinx.one/posts/huginn%E6%8C%87%E5%8D%97%E4%B8%BA%E4%BB%BB%E6%84%8F%E7%BD%91%E7%AB%99%E5%88%B6%E4%BD%9Crss/)
 
 **Postgres**
 数据库，用于存储 RSS 文章数据等。比 MySQL 更轻，性能更好
