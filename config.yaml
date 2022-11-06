@@ -1,6 +1,6 @@
 # clash config file
-# version 1.7
-# last update 2021-08-15
+# version 1.8
+# last update 2022-11-06
 
 # Port of HTTP(S) proxy server on the local end
 port: 8080
@@ -36,13 +36,11 @@ dns:
 
 # proxies:
 
+
 proxy-providers:
-  global:
+  global1:
     type: http
-    #    url: "https://proxypooliu.herokuapp.com/clash/proxies"
-    #    url: "https://cdn.jsdelivr.net/gh/guoxing123/xingxing/clash1123.yaml"
-    #    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
-    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
+    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
     interval: 3600
     path: ./cdn.jsdelivr.net.yaml
     health-check:
@@ -51,9 +49,9 @@ proxy-providers:
       #      url: http://www.gstatic.com/generate_204
       url: "https://www.google.com/robots.txt"
 
-  global2:
+  oversea2:
     type: http
-    url: "https://klausvpn.posyao.com/clash/proxies?nc=CN&speed=1"
+    url: "https://klausvpn.posyao.com/clash/proxies?nc=CN"
     interval: 3600
     path: ./klausvpn.posyao.com.yaml
     health-check:
@@ -63,7 +61,7 @@ proxy-providers:
 
   global3: # won't update
     type: http
-    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fv2raydy%2FClash%40main%2F02-22u2.yaml&target=clash"
+    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fv2raydy%2FClash%40main%2F02-22u2.yaml&target=clash"
     interval: 3600
     path: ./cdn.jsdelivr.net.yaml
     health-check:
@@ -71,29 +69,31 @@ proxy-providers:
       interval: 600
       url: https://www.gstatic.com/generate_204
 
-  global4: # won't update
+
+  global6: # limited
     type: http
-    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchangfengoss%2Fpub%2Fmain%2Fdata%2F2022_05_07%2FWftZxZ.yaml&target=clash"
+    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fclashnode.com%2Fwp-content%2Fuploads%2F2022%2F11%2F20221106.yaml&target=clash"
     interval: 3600
-    path: ./raw.githubusercontent.com.yaml
+    path: ./clashnode.com.yaml
     health-check:
       enable: true
       interval: 600
       url: https://www.gstatic.com/generate_204
 
-  global5: # limited
+  global7: # limited
     type: http
-    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Ftsd.ink%2Ffree&target=clash"
+    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Foss.v2rayse.com%2Fproxies%2Fdata%2F2022-11-06%2FJNd9GO.yaml&target=clash"
     interval: 3600
-    path: ./tsd.ink.yaml
+    path: ./oss.v2rayse.com.yaml
     health-check:
       enable: true
       interval: 600
       url: https://www.gstatic.com/generate_204
 
-  oversea:
+
+  oversea1:
     type: http
-    url: "https://proxy-provider-converter.vercel.app/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fguoxing123%2Fxingxing%2Fclash1123.yaml&target=clash"
+    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fguoxing123%2Fxingxing%2F0427clash.yaml&target=clash"
     interval: 3600
     path: ./cdn.jsdelivr.net.yaml
     health-check:
@@ -101,18 +101,15 @@ proxy-providers:
       interval: 600
       url: "https://www.google.com/robots.txt"
 
+
 proxy-groups:
   # url-test select which proxy will be used by benchmarking speed to a URL.
   # fallback selects an available policy by priority. The availability is tested by accessing an URL, just like an auto url-test group.
   - name: "fq"
     type: fallback
     use:
-      - global
-      - global2
-      - global5
-      - global3
-      - global4
-      - oversea
+      - oversea1
+      - oversea2
     # lazy: true
     url: "https://www.google.com/robots.txt"
     interval: 100
@@ -120,12 +117,12 @@ proxy-groups:
   - name: "global-random"
     type: load-balance
     use:
-      - oversea
-      - global
-      - global2
+      - oversea1
+      - oversea2
+      - global1
       - global3
-      - global4
-      - global5
+      - global6
+      - global7
     proxies:
       - DIRECT
     url: "http://www.gstatic.com/generate_204"
@@ -133,6 +130,7 @@ proxy-groups:
     # use round robin to request the url via random proxies
     # or consistent-hashing will request same url via same proxy
     strategy: round-robin
+
 
 rules:
   # bypass local
@@ -166,6 +164,7 @@ rules:
   - IP-CIDR,197.234.240.0/22,global-random
   - IP-CIDR,198.41.128.0/17,global-random
 
+
   # anti anti crawler
   - DOMAIN-KEYWORD,wechat,global-random
   - DOMAIN-KEYWORD,wexin,global-random
@@ -177,3 +176,4 @@ rules:
   # default
   - GEOIP,CN,DIRECT
   - MATCH,global-random
+
