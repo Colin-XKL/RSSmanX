@@ -21,7 +21,7 @@ services:
       - DB_PORT=5432
       - DB_NAME=ttrss
       - DB_USER=postgres
-      - DB_PASS=${DB_Password:-'pass_for_DB'} # please change the password
+      - DB_PASS=${DB_Password:-pass_for_DB} # please change the password
       - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required.
     networks:
       - net_public
@@ -47,7 +47,7 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
+      - POSTGRES_PASSWORD=${DB_Password:-pass_for_DB} # feel free to change the password
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DBttrss/:/var/lib/postgresql/data # persist db data
     networks:
