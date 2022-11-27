@@ -44,6 +44,7 @@ services:
   app.huginn:
     depends_on:
       - database.huginn
+  # image: zhorvath83/huginn  # arm compatible, but not the latest version
     image: huginn/huginn
     container_name: huginn
     ports:
