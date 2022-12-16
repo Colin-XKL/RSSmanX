@@ -2,6 +2,9 @@
 # version 1.8
 # last update 2022-11-06
 
+# clash config wiki
+# https://github.com/Dreamacro/clash/wiki/Configuration
+
 # Port of HTTP(S) proxy server on the local end
 port: 8080
 
@@ -18,9 +21,7 @@ socks-port: 8085
 # mixed-port: 7890
 
 allow-lan: true
-
 bind-address: "*"
-
 mode: rule
 
 # info / warning / error / debug / silent
