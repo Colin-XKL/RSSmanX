@@ -1,12 +1,12 @@
-# update time 2023-10-31
-# version 3.18
+# update time 2023-12-10
+# version 3.20
 version: "3.5"
 
-x-use-local-time-zone:
+x-local-time-zone:
   - &use-local-time-zone /etc/timezone:/etc/timezone:ro
   - &use-local-time /etc/localtime:/etc/localtime:ro
 x-custom-password: &use-custom-passwd ${DB_Password:-'pass_for_DB'} # please change the password in .env file or here
-
+x-http-proxy: &use-custom-http-proxy clash:8080
 services:
   ######################
   ##   Applications   ##
@@ -24,7 +24,7 @@ services:
       DISABLE_USER_IN_DAYS: 14
       ALLOW_PORTS: ${RSS_ALLOEW_PORTS:-'80,443,3000'}
       # proxy
-      HTTP_PROXY: clash:8080
+      HTTP_PROXY: *use-custom-http-proxy
       # database settings
       DB_HOST: database.ttrss
       DB_PORT: 5432
@@ -188,8 +188,8 @@ services:
       - 3000
     environment:
       NODE_ENV: production
-      HTTP_PROXY: clash:8080
-      HTTPS_PROXY: clash:8080
+      HTTP_PROXY: *use-custom-http-proxy
+      HTTPS_PROXY: *use-custom-http-proxy
     networks:
       - net_public
     labels:
@@ -235,7 +235,7 @@ services:
       WATCHTOWER_SCHEDULE: 0 0 4 * * * # update everyday at midnight
       WATCHTOWER_INCLUDE_STOPPED: true
       WATCHTOWER_REVIVE_STOPPED: true # restart stopped rsshub after an update if it crashed
-      TZ: Asia/Shanghai # use TZ string set time zone. not need for bind tz volume anymore
+      TZ: Asia/Shanghai # use TZ string set time zone. we won't need binding tz volume anymore
     networks:
       - net_public
     volumes:
