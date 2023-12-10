@@ -91,7 +91,6 @@ volumes:
   plugins:
   themes:
 
-
 networks:
   net_public:
   net_private:

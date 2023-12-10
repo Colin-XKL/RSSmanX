@@ -53,7 +53,7 @@ services:
     networks:
       - net_private
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 6
@@ -102,7 +102,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -152,7 +152,6 @@ volumes:
   starred-images:
   plugins:
   themes:
-
 
 networks:
   net_public:
