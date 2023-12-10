@@ -5,6 +5,7 @@ version: "3.5"
 x-use-local-time-zone:
   - &use-local-time-zone /etc/timezone:/etc/timezone:ro
   - &use-local-time /etc/localtime:/etc/localtime:ro
+x-custom-password: &use-custom-passwd ${DB_Password:-'pass_for_DB'} # please change the password in .env file or here
 
 services:
   ######################
@@ -29,7 +30,7 @@ services:
       DB_PORT: 5432
       DB_NAME: ttrss
       DB_USER: postgres
-      DB_PASS: ${DB_Password:-'pass_for_DB'} # please change the password
+      DB_PASS: *use-custom-passwd
       ENABLE_PLUGINS: auth_internal,fever # auth_internal is required.
     networks:
       - net_public
@@ -62,7 +63,7 @@ services:
       DATABASE_HOST: database.huginn
       #      DATABASE_USERNAME: huginn
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: ${DB_Password:-'pass_for_DB'}
+      DATABASE_PASSWORD: *use-custom-passwd
       DATABASE_PORT: 5432
     networks:
       - net_public
@@ -83,7 +84,7 @@ services:
     expose:
       - 5432
     environment:
-      POSTGRES_PASSWORD: ${DB_Password:-'pass_for_DB'} # feel free to change the password
+      POSTGRES_PASSWORD: *use-custom-passwd
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DB_ttrss/:/var/lib/postgresql/data # persist db data
@@ -101,10 +102,6 @@ services:
   database.huginn:
     <<: *common_db
     container_name: huginn_db
-    environment:
-      #      POSTGRES_USER: huginn
-      POSTGRES_PASSWORD: ${DB_Password:-'pass_for_DB'} # feel free to change the password
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DB_huginn/:/var/lib/postgresql/data # persist db data
     labels:
