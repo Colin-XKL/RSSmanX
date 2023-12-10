@@ -74,7 +74,7 @@ services:
   ######################
   ##     Databases    ##
   ######################
-  database.ttrss:
+  database.ttrss: &common_db
     image: postgres:15-alpine # Lock major version
     container_name: ttrss_db
     expose:
@@ -96,24 +96,19 @@ services:
       - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
 
   database.huginn:
-    image: postgres:15-alpine # Lock major version
+    <<: *common_db
     container_name: huginn_db
-    expose:
-      - 5432
     environment:
       #      - POSTGRES_USER=huginn
       - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
       - POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256"
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DB_huginn/:/var/lib/postgresql/data # persist db data
-    networks:
-      - net_private
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U huginn"]
       interval: 30s
       timeout: 5s
       retries: 3
-    restart: unless-stopped
     labels:
       - one.colinx.rssmanx.description='Database of Huginn'
 
