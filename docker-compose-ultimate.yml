@@ -157,7 +157,6 @@ services:
       - one.colinx.rssmanx.description='RSShub makes everything rssable'
 
   service.browserless: # dependency of rsshub
-    # dependency of rsshub
     image: browserless/chrome
     container_name: rsshub_browserless
     environment:
@@ -212,8 +211,6 @@ services:
     #    image: wangqiru/opencc-api-server
     image: colinxkl/opencc-api-go # another opencc api server written in golang
     container_name: ttrss_opencc
-    #    environment:
-    #      - NODE_ENV=production
     expose:
       - 3000
     networks:
@@ -253,7 +250,6 @@ services:
       - net_public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # - /etc/localtime:/etc/localtime:ro
     labels:
       - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
     restart: unless-stopped
