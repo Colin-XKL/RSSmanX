@@ -19,18 +19,18 @@ services:
     ports:
       - ${TTRSS_PORT:-10080}:80/tcp # change the port if you need
     environment:
-      - SELF_URL_PATH=${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
-      - DISABLE_USER_IN_DAYS=14
-      - ALLOW_PORTS=${RSS_ALLOEW_PORTS:-'80,443,3000'}
+      SELF_URL_PATH: ${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
+      DISABLE_USER_IN_DAYS: 14
+      ALLOW_PORTS: ${RSS_ALLOEW_PORTS:-'80,443,3000'}
       # proxy
-      - HTTP_PROXY=clash:8080
+      HTTP_PROXY: clash:8080
       # database settings
-      - DB_HOST=database.ttrss
-      - DB_PORT=5432
-      - DB_NAME=ttrss
-      - DB_USER=postgres
-      - DB_PASS=${DB_Password:-'pass_for_DB'} # please change the password
-      - ENABLE_PLUGINS=auth_internal,fever # auth_internal is required.
+      DB_HOST: database.ttrss
+      DB_PORT: 5432
+      DB_NAME: ttrss
+      DB_USER: postgres
+      DB_PASS: ${DB_Password:-'pass_for_DB'} # please change the password
+      ENABLE_PLUGINS: auth_internal,fever # auth_internal is required.
     networks:
       - net_public
       - net_private
@@ -54,16 +54,16 @@ services:
     ports:
       - ${HUGINN_PORT:-10070}:80/tcp
     environment:
-      - DOMAIN=${HOST}:${HUGINN_PORT:-10070}
-      - PORT=80
-      - DEFAULT_HTTP_USER_AGENT='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.81 Safari/537.36'
+      DOMAIN: ${HOST}:${HUGINN_PORT:-10070}
+      PORT: 80
+      DEFAULT_HTTP_USER_AGENT: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.81 Safari/537.36"
       # database settings
-      - DATABASE_ADAPTER=postgresql
-      - DATABASE_HOST=database.huginn
-      #      - DATABASE_USERNAME=huginn
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=${DB_Password:-'pass_for_DB'}
-      - DATABASE_PORT=5432
+      DATABASE_ADAPTER: postgresql
+      DATABASE_HOST: database.huginn
+      #      DATABASE_USERNAME: huginn
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: ${DB_Password:-'pass_for_DB'}
+      DATABASE_PORT: 5432
     networks:
       - net_public
       - net_private
@@ -83,8 +83,8 @@ services:
     expose:
       - 5432
     environment:
-      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
-      - POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256"
+      POSTGRES_PASSWORD: ${DB_Password:-'pass_for_DB'} # feel free to change the password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DB_ttrss/:/var/lib/postgresql/data # persist db data
     networks:
@@ -102,9 +102,9 @@ services:
     <<: *common_db
     container_name: huginn_db
     environment:
-      #      - POSTGRES_USER=huginn
-      - POSTGRES_PASSWORD=${DB_Password:-'pass_for_DB'} # feel free to change the password
-      - POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256"
+      #      POSTGRES_USER: huginn
+      POSTGRES_PASSWORD: ${DB_Password:-'pass_for_DB'} # feel free to change the password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     volumes:
       - ${DB_DIR:-~/.docker/Database}/DB_huginn/:/var/lib/postgresql/data # persist db data
     labels:
@@ -124,16 +124,16 @@ services:
     # ports:
     #     - '1200:1200'
     environment:
-      - PORT=80
+      PORT: 80
       # miscellaneous settings
-      - NODE_ENV=production
-      - CACHE_TYPE=redis
-      - REDIS_URL=redis://service.redis:6379/
-      - PUPPETEER_WS_ENDPOINT=ws://service.browserless:3000
+      NODE_ENV: production
+      CACHE_TYPE: redis
+      REDIS_URL: redis://service.redis:6379/
+      PUPPETEER_WS_ENDPOINT: ws://service.browserless:3000
       # use proxy
-      - PROXY_URI=socks5://clash:8085
-      - REQUEST_RETRY=5
-      - PROXY_STRATEGY=on_retry
+      PROXY_URI: socks5://clash:8085
+      REQUEST_RETRY: 5
+      PROXY_STRATEGY: on_retry
     expose:
       - 80
     networks:
@@ -153,8 +153,8 @@ services:
     image: browserless/chrome
     container_name: rsshub_browserless
     environment:
-      - USE_CHROME_STABLE=true
-      - DEFAULT_HEADLESS=false
+      USE_CHROME_STABLE: true
+      DEFAULT_HEADLESS: false
     ulimits: # 禁止生成转储文件，避免耗尽磁盘空间
       core:
         hard: 0
@@ -190,9 +190,9 @@ services:
     expose:
       - 3000
     environment:
-      - NODE_ENV=production
-      - HTTP_PROXY=clash:8080
-      - HTTPS_PROXY=clash:8080
+      NODE_ENV: production
+      HTTP_PROXY: clash:8080
+      HTTPS_PROXY: clash:8080
     networks:
       - net_public
     labels:
@@ -233,12 +233,12 @@ services:
     image: containrrr/watchtower
     container_name: watchtower
     environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_LABEL_ENABLE=true # only update containers with flags
-      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
-      - WATCHTOWER_INCLUDE_STOPPED=true
-      - WATCHTOWER_REVIVE_STOPPED=true # restart stopped rsshub after an update if it crashed
-      - TZ=Asia/Shanghai # use TZ string set time zone. not need for bind tz volume anymore
+      WATCHTOWER_CLEANUP: true
+      WATCHTOWER_LABEL_ENABLE: true # only update containers with flags
+      WATCHTOWER_SCHEDULE: 0 0 4 * * * # update everyday at midnight
+      WATCHTOWER_INCLUDE_STOPPED: true
+      WATCHTOWER_REVIVE_STOPPED: true # restart stopped rsshub after an update if it crashed
+      TZ: Asia/Shanghai # use TZ string set time zone. not need for bind tz volume anymore
     networks:
       - net_public
     volumes:
