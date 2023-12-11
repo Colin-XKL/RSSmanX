@@ -1,5 +1,5 @@
-# update time 2022-05-11
-# rssman version 3.3
+# update time 2023-12-11
+# rssman version 4.0
 version: "3.5"
 services:
   ######################
@@ -110,20 +110,6 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
       - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
-
-  service.mercury:
-    # set Mercury Parser API endpoint to `service.mercury:3000` in TTRSS plugin setting page
-    image: wangqiru/mercury-parser-api
-    container_name: ttrss_mercury
-    expose:
-      - 3000
-    environment:
-      - NODE_ENV=production
-    networks:
-      - net_public
-    labels:
-      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the RSS link'
-    restart: always
 
   ######################
   ##     Utilities    ##

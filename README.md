@@ -67,7 +67,7 @@ For full installation document, please go to 📕
 
 1. install requirements like `docker` and `docker-compose`
 2. clone this repository
-3. cd into the folder
+3. choose the version you want to use, `cd` into the folder
 4. edit `.env` file to set variables
 4. run `sudo docker-compose up -d`
 5. wait until the program done
@@ -175,3 +175,4 @@ GPL-3.0
 - 2021-08-14 v2.6 Optimize route rules
 - 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.
 - 2022-05-11 v3.3 Fix some problem when deploy huginn on a NAS, update some default configs.
+- 2023-12-11 v4.0 Refactor compose yaml files, make it more clear and easy to use.

@@ -210,7 +210,7 @@ services:
     restart: unless-stopped
 
   service.clash:
-    image: dreamacro/clash
+    image: dreamacro/clash:v1.18.0 # lock the version as the original author has abandoned the repo
     container_name: clash
     networks:
       - net_public

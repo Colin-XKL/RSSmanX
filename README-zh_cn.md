@@ -36,15 +36,15 @@
 | 反反爬虫           |        |         | ✅             |
 
 
-不同组件的功能描述见文末。不同版本对应的配置文件如下：
+不同组件的功能描述见文末。不同版本对应的文件夹如下：
 
-**标准版：**`docker-compose.yml`
+**标准版：** `rssman-standard`
 
-**Lite 版：**`docker-compose-lite.yml`
+**Lite 版：** `rssman-lite`
 
-**Ultimate 版：**`docker-compose-ultimate.yml`和`config.yaml`
+**Ultimate 版：** `rssman-ultimate`
 
-选择对应版本下载到本地后都 compose 文件需要重命名为标准的`docker-compose.yml`
+确定好要使用的版本, 填写好`.env`文件中的变量,如服务器地址和数据库密码等, 使用`sudo docker compose up -d`命令即可快速部署
 
 # 安装说明
 详细docker组件安装和其他部署细节可以参见[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)
@@ -101,11 +101,11 @@ sudo apt install docker-compose
 
 1. 访问你设置的`SELF_URL`即可看到 Tiny Tiny RSS 的登陆页面，使用默认账户`admin`，密码`password`登陆即可开始使用。
 2. 如开启海外站点解锁支持，第一次冷启动需要等待 3-5 分钟才能完全启动所有组件。
-3. 数据保存位置 ~/.dockerData/Database/
-4. 在TTRSS中将原来订阅的 `rsshub.app/*` 更改为 `rsshub/*` 即可使用RSSMan内的自建RSSHub实例，并激活反反爬虫和海外源加速等功能
+3. 默认数据保存位置 `~/.dockerData/Database/`, 你可以在`.env`文件中更改
+4. 在TTRSS中将原来订阅的 `https://rsshub.app/*` 更改为 `http://rsshub/*` 即可使用RSSMan内的自建RSSHub实例，并激活反反爬虫和海外源加速等功能
 5. 关于ARM平台的支持可查阅置顶的issue
 6. 默认情况下只有TTRSS和Huginn可以从外部访问，其他组件互相可以访问但不能直接从内部访问以提高安全性
-7. RSS Man X的除 lite 以外的版本默认包含了自托管的 mercury 实例，你只需要在插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`  
+7. RSS Man X的自托管的 mercury 实例，你只需要在插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`  
 
 其他常见问题和部署使用细节可以查阅Github Issue或[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)  
 
@@ -175,3 +175,4 @@ GPL-3.0
 - 2021-08-14 v2.6 Optimize route rules
 - 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.
 - 2022-05-11 v3.3 Fix some problem when deploy huginn on a NAS, update some default configs.
+- 2023-12-11 v4.0 Refactor compose yaml files, make it more clear and easy to use.
