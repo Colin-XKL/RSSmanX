@@ -1,5 +1,5 @@
-# update time 2023-12-10
-# version 3.20
+# update time 2023-12-11
+# rssman version 4.0
 version: "3.5"
 
 x-local-time-zone:
@@ -22,7 +22,7 @@ services:
     environment:
       SELF_URL_PATH: ${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
       DISABLE_USER_IN_DAYS: 14
-      ALLOW_PORTS: ${RSS_ALLOEW_PORTS:-'80,443,3000'}
+      ALLOW_PORTS: ${RSS_ALLOW_PORTS:-'80,443,3000'}
       # proxy
       HTTP_PROXY: *use-custom-http-proxy
       # database settings

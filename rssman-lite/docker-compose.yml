@@ -1,5 +1,5 @@
 # update time 2022-05-11
-# version 3.3
+# rssman version 3.3
 version: "3.5"
 services:
   ######################
@@ -15,7 +15,7 @@ services:
     environment:
       - SELF_URL_PATH=${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
       - DISABLE_USER_IN_DAYS=14
-      - ALLOW_PORTS=${RSS_ALLOEW_PORTS:-'80,443,3000'}
+      - ALLOW_PORTS=${RSS_ALLOW_PORTS:-'80,443,3000'}
       # database settings
       - DB_HOST=database.ttrss
       - DB_PORT=5432
