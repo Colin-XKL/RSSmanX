@@ -3,7 +3,7 @@
 version: "3.5"
 
 x-local-time-zone:
-  - &use-local-time-zone /etc/timezone:/etc/timezone:ro
+#  - &use-local-time-zone /etc/timezone:/etc/timezone:ro
   - &use-local-time /etc/localtime:/etc/localtime:ro
 x-custom-password: &use-custom-passwd ${DB_Password:-'pass_for_DB'} # please change the password in .env file or here
 x-http-proxy: &use-custom-http-proxy clash:8080
@@ -36,7 +36,7 @@ services:
       - net_public
       - net_private
     volumes:
-      - *use-local-time-zone
+ #     - *use-local-time-zone
       - *use-local-time
       - feed-favicon-cache:/var/www/cache/feed-icons
       - starred-image-cache:/var/www/cache/starred-images
@@ -140,7 +140,7 @@ services:
       - 223.5.5.5
       - 8.8.8.8
     volumes:
-      - *use-local-time-zone
+#      - *use-local-time-zone
       - *use-local-time
     labels:
       - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
@@ -217,7 +217,7 @@ services:
     volumes:
       - ./config.yaml:/root/.config/clash/config.yaml:ro
       - clash-data:/root/.config/clash
-      - *use-local-time-zone
+#      - *use-local-time-zone
       - *use-local-time
     labels:
       - one.colinx.rssmanx.description='A flexible and powerful forward proxy'
