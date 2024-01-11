@@ -1,5 +1,5 @@
-# update time 2023-12-11
-# rssman version 4.0
+# update time 2024-01-11
+# rssman version 4.1
 version: "3.5"
 
 x-local-time-zone:
@@ -20,7 +20,7 @@ services:
     ports:
       - ${TTRSS_PORT:-10080}:80/tcp # change the port if you need
     environment:
-      SELF_URL_PATH: ${TTRSS_SELF_URL:?'The TTRSS self url value is needed'} # please change to your own domain
+      SELF_URL_PATH: ${TTRSS_SELF_URL:?'The TTRSS self url value is required'} # please change to your own domain
       DISABLE_USER_IN_DAYS: 14
       ALLOW_PORTS: ${RSS_ALLOW_PORTS:-'80,443,3000'}
       # proxy
