@@ -119,9 +119,9 @@ services:
       - service.clash
     restart: on-failure:5
     # ports:
-    #     - '1200:1200'
+    #     - '1200:80' # 如果要把 rsshub 实例暴露在公网的话可以修改这里的设置
     environment:
-      PORT: 80
+      PORT: 80  # 指定rsshub 实例运行在容器的80端口，这样可以通过 http://rsshub/xxxxx 来访问
       # miscellaneous settings
       NODE_ENV: production
       CACHE_TYPE: redis
@@ -130,7 +130,7 @@ services:
       # use proxy
       PROXY_URI: socks5://clash:8085
       REQUEST_RETRY: 5
-      PROXY_STRATEGY: on_retry
+#       PROXY_STRATEGY: on_retry  # 作用：需要指定服务器先尝试直连再使用代理。不建议服务器在大陆地区的用户开启
     expose:
       - 80
     networks:
