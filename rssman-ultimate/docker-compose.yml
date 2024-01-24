@@ -68,9 +68,13 @@ services:
     networks:
       - net_public
       - net_private
-    dns:
-      - 223.5.5.5
-      - 8.8.8.8
+# 如果初始化时一直启动不了，日志报错连接不上 ruby gems, 可以进容器执行一下
+# bundle config mirror.https://rubygems.org https://mirrors.ustc.edu.cn/rubygems/
+# 设置为使用中科大的镜像源
+
+#    dns:  # 有兼容性问题，一般不建议开启。
+#      - 223.5.5.5
+#      - 8.8.8.8
     restart: always
     labels:
       - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
