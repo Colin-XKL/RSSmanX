@@ -1,5 +1,5 @@
-# update time 2023-12-11
-# rssman version 4.0
+# update time 2024-05-04
+# rssman version 4.2
 version: "3.5"
 services:
   ######################
@@ -35,7 +35,7 @@ services:
     stdin_open: true
     tty: true
     labels:
-      - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
+      one.colinx.rssmanx.description: 'Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     restart: always
 
   ######################
@@ -59,7 +59,7 @@ services:
       retries: 6
     restart: always
     labels:
-      - one.colinx.rssmanx.description='Database of Tiny Tiny RSS service'
+      one.colinx.rssmanx.description: 'Database of Tiny Tiny RSS service'
 
   ######################
   ##     Services     ##
@@ -90,8 +90,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='RSShub makes everything rssable'
+      com.centurylinklabs.watchtower.enable: 'true' # keep the rsshub up to date
+      one.colinx.rssmanx.description: 'RSShub makes everything rssable'
 
   service.redis:
     # dependency of rsshub
@@ -108,8 +108,8 @@ services:
       retries: 5
     restart: always
     labels:
-      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
-      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
+      com.centurylinklabs.watchtower.enable: 'true' # keep rsshub up to date
+      one.colinx.rssmanx.description: 'This is one of the rsshub dependencies'
 
   ######################
   ##     Utilities    ##
@@ -118,18 +118,18 @@ services:
     image: containrrr/watchtower
     container_name: watchtower
     environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_LABEL_ENABLE=true # only update containers with flags
-      - WATCHTOWER_SCHEDULE=0 0 4 * * * # update everyday at midnight
-      - WATCHTOWER_INCLUDE_STOPPED=true
-      - WATCHTOWER_REVIVE_STOPPED=true # restart stopped rsshub after an update if it crashed
+      WATCHTOWER_CLEANUP: 'true'
+      WATCHTOWER_LABEL_ENABLE: 'true' # only update containers with flags
+      WATCHTOWER_SCHEDULE: '0 0 4 * * *' # update everyday at midnight
+      WATCHTOWER_INCLUDE_STOPPED: 'true'
+      WATCHTOWER_REVIVE_STOPPED: 'true' # restart stopped rsshub after an update if it crashed
     networks:
       - net_public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
     labels:
-      - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
+      one.colinx.rssmanx.description: 'A tool to make your docker containers up to date.'
     restart: unless-stopped
 
 volumes:

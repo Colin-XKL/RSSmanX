@@ -1,5 +1,5 @@
-# update time 2024-01-11
-# rssman version 4.1
+# update time 2024-05-04
+# rssman version 4.2
 version: "3.5"
 
 x-local-time-zone:
@@ -147,8 +147,8 @@ services:
 #      - *use-local-time-zone
       - *use-local-time
     labels:
-      - com.centurylinklabs.watchtower.enable=true # keep the rsshub up to date
-      - one.colinx.rssmanx.description='RSShub makes everything rssable'
+      com.centurylinklabs.watchtower.enable: 'true' # keep the rsshub up to date
+      one.colinx.rssmanx.description: 'RSShub makes everything rssable'
 
   service.browserless: # dependency of rsshub
     image: browserless/chrome
@@ -164,8 +164,8 @@ services:
     networks:
       - net_public
     labels:
-      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
-      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
+      com.centurylinklabs.watchtower.enable: 'true' # keep rsshub up to date
+      one.colinx.rssmanx.description: 'This is one of the rsshub dependencies'
 
   service.redis: # dependency of rsshub
     image: redis:6-alpine
@@ -181,8 +181,8 @@ services:
       retries: 5
     restart: always
     labels:
-      - com.centurylinklabs.watchtower.enable=true # keep rsshub up to date
-      - one.colinx.rssmanx.description='This is one of the rsshub's dependencies'
+      com.centurylinklabs.watchtower.enable: 'true' # keep rsshub up to date
+      one.colinx.rssmanx.description: 'This is one of the rsshub dependencies'
 
   service.mercury:
     # set Mercury Parser API endpoint to `service.mercury:3000` in TTRSS plugin setting page
@@ -197,7 +197,7 @@ services:
     networks:
       - net_public
     labels:
-      - one.colinx.rssmanx.description='A plugin of TTRSS that can help you get fulltext of the RSS link'
+      one.colinx.rssmanx.description: 'A plugin of TTRSS that can help you get fulltext of the RSS link'
     restart: always
 
   service.opencc:
@@ -210,7 +210,7 @@ services:
     networks:
       - net_private
     labels:
-      - one.colinx.rssmanx.description='A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
+      one.colinx.rssmanx.description: 'A plugin of TTRSS, translation between Traditional Chinese and Simplified Chinese'
     restart: unless-stopped
 
   service.clash:
@@ -224,7 +224,7 @@ services:
 #      - *use-local-time-zone
       - *use-local-time
     labels:
-      - one.colinx.rssmanx.description='A flexible and powerful forward proxy'
+      one.colinx.rssmanx.description: 'A flexible and powerful forward proxy'
     restart: always
 
   ######################
@@ -245,7 +245,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - one.colinx.rssmanx.description='A tool to make your docker containers up to date.'
+      one.colinx.rssmanx.description: 'A tool to make your docker containers up to date.'
     restart: unless-stopped
 
 volumes:
