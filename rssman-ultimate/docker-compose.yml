@@ -1,16 +1,71 @@
-# update time 2024-05-04
-# rssman version 4.2
-version: "3.5"
+# update time 2024-11-16
+# version 4.3
 
 x-local-time-zone:
 #  - &use-local-time-zone /etc/timezone:/etc/timezone:ro
   - &use-local-time /etc/localtime:/etc/localtime:ro
 x-custom-password: &use-custom-passwd ${DB_Password:-'pass_for_DB'} # please change the password in .env file or here
 x-http-proxy: &use-custom-http-proxy clash:8080
+x-common-logging: &common-logging
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"  # Maximum log file size (e.g., 10 megabytes)
+      max-file: "3"    # Maximum number of log files to keep (e.g., 3 files)
 services:
   ######################
   ##   Applications   ##
   ######################
+
+  app.wewe:
+    image: cooderl/wewe-rss-sqlite
+    container_name: wewe-rss
+    ports:
+      - ${WEWE_RSS_PORT:-10084}:80
+    networks:
+      - net_public
+    restart: always
+    environment:
+      - PORT=80
+      # 数据库连接地址
+      - DATABASE_URL=file:/app/data/wewe-rss.db
+      - DATABASE_TYPE=sqlite
+      # 服务接口请求授权码
+      - AUTH_CODE=${WEWE_RSS_ADMIN_AUTH_CODE}
+      # 提取全文内容模式
+      - FEED_MODE=fulltext
+      # 定时更新订阅源Cron表达式
+      - CRON_EXPRESSION=35 5,17 * * *
+      # 服务接口请求限制，每分钟请求次数
+      - MAX_REQUEST_PER_MINUTE=60
+      # 外网访问时，需设置为服务器的公网 IP 或者域名地址
+      - SERVER_ORIGIN_URL=${WEWE_RSS_ADMIN_BASE_URL}
+    volumes:
+      # 映射数据库文件存储位置，容器重启后不丢失
+      - /data/database/wewe-rss:/app/data
+      - *use-local-time
+
+  app.feedcraft:
+    image: ghcr.io/colin-xkl/feed-craft
+    container_name: feed-craft
+    restart: always
+#    ports:
+#      - 10088:80  # 如果需要访问后台,暴露到公网,修改这里的端口
+    networks:
+      - net_private
+      - net_public
+    volumes:
+      - *use-local-time
+      - /data/database/feed-craft:/usr/local/feed-craft/db
+    environment:
+      PORT: 80  # 默认80, 同个网络下的容器可以通过 http://feed-craft/xxxx的形式访问
+      FC_PUPPETEER_HTTP_ENDPOINT: http://service.browserless:3000
+      FC_REDIS_URI: redis://service.redis:6379/
+
+      #FC_OPENAI_AUTH_KEY: skxxxx
+      #FC_OPENAI_DEFAULT_MODEL: chatgpt-3.5 # 默认使用的模型
+      #FC_OPENAI_ENDPOINT: https://xxx # OPENAI API 或兼容平台的API接口路径
+
   app.ttrss:
     image: wangqiru/ttrss
     container_name: ttrss
@@ -45,6 +100,7 @@ services:
     labels:
       - one.colinx.rssmanx.description='Tiny Tiny RSS is a free and open source web-based news feed (RSS/Atom) reader and aggregator'
     restart: always
+    <<: *common-logging
 
   app.huginn:
     depends_on:
@@ -75,7 +131,8 @@ services:
 #    dns:  # 有兼容性问题，一般不建议开启。
 #      - 223.5.5.5
 #      - 8.8.8.8
-    restart: always
+    restart: unless-stopped
+    <<: *common-logging
     labels:
       - one.colinx.rssmanx.description='Huginn is a powerful IFTTT application'
 
@@ -146,6 +203,7 @@ services:
     volumes:
 #      - *use-local-time-zone
       - *use-local-time
+    <<: *common-logging
     labels:
       com.centurylinklabs.watchtower.enable: 'true' # keep the rsshub up to date
       one.colinx.rssmanx.description: 'RSShub makes everything rssable'
@@ -214,18 +272,22 @@ services:
     restart: unless-stopped
 
   service.clash:
-    image: dreamacro/clash:v1.18.0 # lock the version as the original author has abandoned the repo
+#    image: dreamacro/clash:v1.18.0 # lock the version as the original author has abandoned the repo
+    image: metacubex/mihomo 
     container_name: clash
     networks:
       - net_public
     volumes:
-      - ./config.yaml:/root/.config/clash/config.yaml:ro
-      - clash-data:/root/.config/clash
+#      - ./config.yaml:/root/.config/clash/config.yaml:ro
+      - ./config.yaml:/root/.config/mihomo/config.yaml:ro
+#      - clash-data:/root/.config/clash
+      - clash-data-mihomo:/root/.config/mihomo
 #      - *use-local-time-zone
       - *use-local-time
     labels:
       one.colinx.rssmanx.description: 'A flexible and powerful forward proxy'
     restart: always
+    <<: *common-logging
 
   ######################
   ##     Utilities    ##
@@ -254,7 +316,7 @@ volumes:
   starred-image-cache:
   plugin:
   theme:
-  clash-data:
+  clash-data-mihomo:
 
 networks:
   net_public:

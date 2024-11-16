@@ -1,9 +1,9 @@
 # clash config file
-# version 1.8
-# last update 2022-11-06
+# version 2.0
+# last update 2024-11-16
 
 # clash config wiki
-# https://github.com/Dreamacro/clash/wiki/Configuration
+# https://wiki.metacubex.one/config/proxies/ss/
 
 # Port of HTTP(S) proxy server on the local end
 port: 8080
@@ -39,69 +39,11 @@ dns:
 
 
 proxy-providers:
-  global1:
+ global10: # 公益免费节点
     type: http
-    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fssrsub%2Fssr%2FClash.yml&target=clash"
+    url: "https://sub-manager.colinx.workers.dev/sub_manager?token=rssman"
+    path: ./merged_sub.yaml
     interval: 3600
-    path: ./cdn.jsdelivr.net.yaml
-    health-check:
-      enable: true
-      interval: 600
-      #      url: http://www.gstatic.com/generate_204
-      url: "https://www.google.com/robots.txt"
-
-  oversea2:
-    type: http
-    url: "https://klausvpn.posyao.com/clash/proxies?nc=CN"
-    interval: 3600
-    path: ./klausvpn.posyao.com.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: https://www.gstatic.com/generate_204
-
-  global3: # won't update
-    type: http
-    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fv2raydy%2FClash%40main%2F02-22u2.yaml&target=clash"
-    interval: 3600
-    path: ./cdn.jsdelivr.net.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: https://www.gstatic.com/generate_204
-
-
-  global6: # limited
-    type: http
-    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fclashnode.com%2Fwp-content%2Fuploads%2F2022%2F11%2F20221106.yaml&target=clash"
-    interval: 3600
-    path: ./clashnode.com.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: https://www.gstatic.com/generate_204
-
-  global7: # limited
-    type: http
-    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Foss.v2rayse.com%2Fproxies%2Fdata%2F2022-11-06%2FJNd9GO.yaml&target=clash"
-    interval: 3600
-    path: ./oss.v2rayse.com.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: https://www.gstatic.com/generate_204
-
-
-  oversea1:
-    type: http
-    url: "https://proxy-provider-converter.app.colinx.one/api/convert?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fguoxing123%2Fxingxing%2F0427clash.yaml&target=clash"
-    interval: 3600
-    path: ./cdn.jsdelivr.net.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: "https://www.google.com/robots.txt"
-
 
 proxy-groups:
   # url-test select which proxy will be used by benchmarking speed to a URL.
@@ -109,21 +51,16 @@ proxy-groups:
   - name: "fq"
     type: fallback
     use:
-      - oversea1
-      - oversea2
+      - global10
     # lazy: true
     url: "https://www.google.com/robots.txt"
     interval: 100
-
+    #proxies: # 当服务器在境外的时候可以直连
+    #  - DIRECT
   - name: "global-random"
     type: load-balance
     use:
-      - oversea1
-      - oversea2
-      - global1
-      - global3
-      - global6
-      - global7
+      - global10
     proxies:
       - DIRECT
     url: "http://www.gstatic.com/generate_204"
@@ -175,6 +112,6 @@ rules:
   - DOMAIN,segmentfault.com,global-random
 
   # default
-  - GEOIP,CN,DIRECT
+#  - GEOIP,CN,DIRECT
   - MATCH,global-random
 

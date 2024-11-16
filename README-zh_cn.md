@@ -7,7 +7,7 @@
 ![release](https://img.shields.io/github/v/release/Colin-XKL/RSSmanX)
 ![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FColin-XKL%2FRSSmanX.svg?type=shield)
 
-[RSSman X](https://github.com/Colin-XKL/RSSmanX) 基于 docker-compsoe 提供容器化 TTRSS 与 RSSHUB 等组件的一键部署，整合实用组件为你带来最佳 RSS 体验
+[RSSman X](https://github.com/Colin-XKL/RSSmanX) 基于 docker-compose 提供容器化 TTRSS 与 RSSHUB 等组件的一键部署，整合实用组件为你带来最佳 RSS 体验
 
 **Feature： 简单一键部署，常用组件支持，自动更新支持，服务健康自检支持，海外站点 RSS 解锁**
 
@@ -17,23 +17,35 @@
 
 ### 不同版本中包含的组件说明
 
-三个版本的`docker-compose`文件对应不同的需求，包含的组件和服务有差异。
+三个版本的`docker-compose`文件对应不同的需求，包含的组件和服务有差异, 上手和维护复杂度也不同, 请根据需要选择.
+对于有一定基础的用户, 建议优先选择ultimate版本, 功能最全面, 更新也最多
 
-| 组件/服务/功能名称 | 标准版 | Lite 版 | Ultimate 版 ✨ |
-| ------------------ | ------ | ------- | -------------- |
-| TTRSS              | ✅     | ✅      | ✅             |
-| RSSHub             | ✅     | ✅      | ✅             |
-| Huginn             |        |         | ✅             |
-| Mercury            | ✅     |         | ✅             |
-| OpenCC             |        |         | ✅             |
-| Redis              | ✅     |         | ✅             |
-| Browserless        |        |         | ✅             |
-| 数据持久化保存     | ✅     | ✅      | ✅             |
-| 容器自动更新       | ✅     |         | ✅             |
-| 容器健康检查       | ✅     |         | ✅             |
-| 海外站点加速       |        |         | ✅             |
-| 智能路由           |        |         | ✅             |
-| 反反爬虫           |        |         | ✅             |
+
+| **组件名**      | **说明**                                       | **Lite 版** | **标准版** | **Ultimate 版 ✨** |
+| --------------- | ---------------------------------------------- | ----------- | ---------- | ----------------- |
+| **TTRSS**       | RSS阅读、管理                                  | ✅           | ✅          | ✅                 |
+| **RSSHub**      | 为各种网站添加RSS支持                          | ✅           | ✅          | ✅                 |
+| **Huginn**      | 强大的IFTTT工具,可以用来为任意网站生成RSS      |             |            | ✅                 |
+| **Mercury**     | TTRSS插件组件,用于提取全文                     |             | ✅          | ✅                 |
+| **OpenCC**      | TTRSS插件组件,用于简繁中文转换                 |             |            | ✅                 |
+| **Redis**       | 附加组件,缓存内容                              |             | ✅          | ✅                 |
+| **Browserless** | 附加组件,模拟浏览器抓取网页                    |             |            | ✅                 |
+| **WEWE-RSS**    | 将微信公众号转换为RSS                          |             |            | ✅                 |
+| **FeedCraft**   | 强大的RSS处理工具,可以支持AI摘要、翻译、聚合等 |             |            | ✅                 |
+
+
+其他一些特性:
+
+| **特性**                   | **Lite 版** | **标准版** | **Ultimate 版 ✨** |
+| -------------------------- | ----------- | ---------- | ----------------- |
+| **数据持久化保存**         | ✅           | ✅          | ✅                 |
+| **容器自动更新**           |             | ✅          | ✅                 |
+| **容器健康检查**           |             | ✅          | ✅                 |
+| **海外站点加速**           |             |            | ✅                 |
+| **智能路由**               |             |            | ✅                 |
+| **反反爬虫**               |             |            | ✅                 |
+| **开箱即用的公益代理配置** |             |            | ✅                 |
+
 
 
 不同组件的功能描述见文末。不同版本对应的文件夹如下：
@@ -45,6 +57,7 @@
 **Ultimate 版：** `rssman-ultimate`
 
 确定好要使用的版本, 填写好`.env`文件中的变量,如服务器地址和数据库密码等, 使用`sudo docker compose up -d`命令即可快速部署
+(注`.env`文件这种以点开头的文件,在linux中默认是隐藏的, 需要使用`ls -a`才会显示)
 
 # 安装说明
 详细docker组件安装和其他部署细节可以参见[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)
@@ -53,7 +66,7 @@
 
 - 一台 Linux 系统的服务器
 
-  > 本文以腾讯云 Ubuntu 18.04 系统的服务器为例，其他云服务商的没差，系统为 CentOS 的会有点差异
+  > 本文以 Ubuntu 18.04 系统的服务器为例，其他系统如 CentOS 的会有点差异, 此处不再赘述
 
 ## 依赖项
 
@@ -89,13 +102,13 @@ sudo apt install docker-compose
 
 ## 如何安装
 
-安装好了 `docker` 和 `docker-compose` 后，可以使用`git clone https://github.com/Colin-XKL/RSSmanX --depth=1`快速克隆本仓库，也可以通过[这个镜像地址](https://archive.fastgit.org/Colin-XKL/RSSmanX/archive/refs/heads/master.zip)下载仓库zip文件，[Gitee上也有镜像](https://gitee.com/colin-xkl/RSSmanX)不过不经常更新。
+安装好了 `docker` 和 `docker-compose` 后，可以使用`git clone https://github.com/Colin-XKL/RSSmanX --depth=1`快速克隆本仓库，也可以通过[这个镜像地址](https://archive.fastgit.org/Colin-XKL/RSSmanX/archive/refs/heads/master.zip)下载仓库zip文件
 
 1. cd 进入文件夹，修改.env中的值，如密码和TTRSS入口URL等
-2. 选择一个你需要安装的RSS MAN X的版本，删除其他两个文件并重命名为标准的compose文件名。如安装ultimate版，rm删除另外两个，之后`mv docker-compose-ultimate.yml docker-compose.yml`进行重命名
-2. 运行 `sudo docker-compose up -d`
-3. 等待程序跑完
-4. 安装完成 ✅
+2. 选择一个你需要安装的RSS MAN X的版本，如安装ultimate版，进入需要根据需要填写好`.env`文件中的变量
+3. 运行 `sudo docker-compose up -d`
+4. 等待程序跑完
+5. 安装完成 ✅
 
 #### 使用相关事宜：
 
@@ -104,8 +117,8 @@ sudo apt install docker-compose
 3. 默认数据保存位置 `~/.dockerData/Database/`, 你可以在`.env`文件中更改
 4. 在TTRSS中将原来订阅的 `https://rsshub.app/*` 更改为 `http://rsshub/*` 即可使用RSSMan内的自建RSSHub实例，并激活反反爬虫和海外源加速等功能
 5. 关于ARM平台的支持可查阅置顶的issue
-6. 默认情况下只有TTRSS和Huginn可以从外部访问，其他组件互相可以访问但不能直接从内部访问以提高安全性
-7. RSS Man X的自托管的 mercury 实例，你只需要在插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`  
+6. 默认情况下只有TTRSS和Huginn可以从外部访问，其他组件互相可以访问但不能直接从外部访问以提高安全性
+7. RSS Man X的自托管的 mercury 实例，你只需要在TTRSS插件配置页面设置 mercury 实例地址为 `service.mercury:3000` 即可，同理，OpenCC实例地址为`service.opencc:3000`  
 
 其他常见问题和部署使用细节可以查阅Github Issue或[RSSManX 安装部署指南](https://blog.colinx.one/posts/rssmanx%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97/)  
 
@@ -121,6 +134,8 @@ RSS 订阅管理与在线阅读工具
 
 **RSShub**
 生成国内大部分网站的 RSS 信息源，同时自部署可以访问到那些严格防爬的站点的源（知乎、微博等）
+使用文档: https://docs.rsshub.app
+官方链接无法访问的话也可以使用我维护的镜像文档站点: https://rsshub-doc.azure.colinx.one/zh/guide/
 
 **Huginn**
 高级 IFTTT 工具，你可以用生成任何 RSS 源，但使用门槛略高，可参考这篇教程 [Huginn 指南：为任意网站制作 RSS
@@ -147,6 +162,22 @@ RSS 订阅管理与在线阅读工具
 **Clash**
 智能路由与正向代理工具，用于解锁海外站点及提供海外 RSS 源的加速
 
+**WEWE RSS**
+通过微信读书的接口获取公众号内容来生成RSS. 相对于其他爬虫形式的方案更加稳定.
+
+**FeedCraft**
+强大的RSS处理工具, 支持对RSS进行AI摘要, 翻译, 聚合等. 兼容现有的任何RSS阅读器和工具.
+
+# 建议配置
+建议使用至少1c1g的Linux x86服务器以获得更好的体验
+
+rssman-lite: 256M内存  
+rssman-standard: 256M内存  
+rssman-ultimate: 1G内存, 建议预留1.5-2G内存以获得更好体验  
+
+
+
+
 # Acknowledgement
 
 - [Tiny tiny RSS](https://tt-rss.org/)
@@ -163,16 +194,17 @@ GPL-3.0
 
 # Changelogs
 
-- 2020-07-07 v1.0 First release
-- 2020-07-14 v1.1 Update quick start shell script
-- 2020-10-05 v1.2 Fix wrong environment variable.
-- 2020-11-08 v1.3 TTRSS now can update feeds with ports except 80/443, and our self-hosted rsshub works again.
-- 2020-11-13 v1.4 Several updates includes security and performance enhancements.
-- 2020-11-24 v1.5 Lock the docker image version of some services to avoid unexpected errors.
-- 2021-05-08 v2.0 Add container network isolation, health check, global proxy, smart routing etc.
-- 2021-05-10 v2.1 Add rules for anti-anti-crawler, cloudflare etc.
-- 2021-06-15 v2.5 Update route rules, and better container restart policy.
-- 2021-08-14 v2.6 Optimize route rules
-- 2022-05-08 v3.1 Use .env file to set varaiables, update route configs etc.
-- 2022-05-11 v3.3 Fix some problem when deploy huginn on a NAS, update some default configs.
-- 2023-12-11 v4.0 Refactor compose yaml files, make it more clear and easy to use.
+- 2020-07-07 v1.0 首次发布
+- 2020-07-14 v1.1 更新快速启动脚本
+- 2020-10-05 v1.2 修复错误的环境变量
+- 2020-11-08 v1.3 TTRSS 现在可以使用除 80/443 以外的端口更新订阅，且自托管 rsshub 再次可用
+- 2020-11-13 v1.4 多项更新，包括安全性和性能增强
+- 2020-11-24 v1.5 锁定某些服务的 Docker 镜像版本，以避免意外错误
+- 2021-05-08 v2.0 添加容器网络隔离、健康检查、全局代理、智能路由等功能
+- 2021-05-10 v2.1 添加反反爬虫、Cloudflare 等的规则
+- 2021-06-15 v2.5 更新路由规则，改进容器重启策略
+- 2021-08-14 v2.6 优化路由规则
+- 2022-05-08 v3.1 使用 .env 文件设置变量，更新路由配置等
+- 2022-05-11 v3.3 修复在 NAS 上部署 Huginn 时的一些问题，更新一些默认配置
+- 2023-12-11 v4.0 重构 Compose YAML 文件，使其更清晰易用
+- 2024-11-16 v4.3 添加wewe-rss, feed-craft, 以及clash的继任者. 更新默认的公益代理配置
